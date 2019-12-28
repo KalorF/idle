@@ -53,7 +53,7 @@ export default {
 .footer {
   position: fixed;
   bottom: 0;
-  background: #ffffff;
+  background: #FEFEFE;
   height: 65px;
   width: 100%;
   // border-top-left-radius: 20px;

@@ -15,7 +15,7 @@ export default {
 <style lang="scss">
 body {
   font-size: 14px;
-  background: #f5f5f5;
+  background: #f6f6f6;
 }
 .icon {
   width: 1em; height: 1em;
