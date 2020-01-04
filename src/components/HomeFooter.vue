@@ -8,18 +8,18 @@
         <div>首页</div>
       </div>
     </router-link>
-    <router-link tag="div" class="footerItem" :to="{path: '/moments'}" replace>
+    <router-link tag="div" class="footerItem" :to="{path: '/dynamic'}" replace>
       <div class="itemLink">
         <svg class="icon iconSize" aria-hidden="true">
           <use xlink:href="#icon-liulan"></use>
         </svg>
-        <div>圈子</div>
+        <div>动态</div>
       </div>
     </router-link>
     <router-link tag="div" class="footerItem" :to="{path: '/publish'}" replace>
       <div class="itemLink">
-        <svg class="icon iconSize" aria-hidden="true">
-          <use xlink:href="#icon-liulan"></use>
+        <svg class="icon centerIcon" aria-hidden="true">
+          <use xlink:href="#icon-qitake"></use>
         </svg>
         <div>发布</div>
       </div>
@@ -53,7 +53,8 @@ export default {
 .footer {
   position: fixed;
   bottom: 0;
-  background: #FEFEFE;
+  // background: #FEFEFE;
+  background: rgba($color: #FEFEFE, $alpha: 0.97);
   height: 65px;
   width: 100%;
   // border-top-left-radius: 20px;
@@ -73,6 +74,10 @@ export default {
       transition: all .1s;
       // font-weight: bold;
     }
+    .centerIcon {
+      font-size: 36px;
+      margin-top: 1;
+    }
     &.router-link-active {
       .itemLink {
         color: #1FD8A0;
@@ -84,7 +89,7 @@ export default {
       div {
         font-size: 15px;
         color: #1FD8A0;
-        font-weight: bold;
+        // font-weight: bold;
       }
     }
   }
