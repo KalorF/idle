@@ -24,7 +24,7 @@
         <div>发布</div>
       </div>
     </router-link>
-    <router-link tag="div" class="footerItem" :to="{path: '/information'}" replace>
+    <router-link tag="div" class="footerItem" :to="{path: '/message'}" replace>
       <div class="itemLink">
         <svg class="icon iconSize" aria-hidden="true">
           <use xlink:href="#icon-xiaoxi"></use>

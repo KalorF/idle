@@ -9,7 +9,7 @@
         <div class="sortItem" @click="change(item, index)" :class="{active: activeIndex === index}" v-for="(item, index) in sortList" :key="index">{{ item }}</div>
       </div>
       <div class="goodsBox">
-        <div class="goodsItem" v-for="i in 10" :key="i">
+        <div class="goodsItem" v-for="i in 10" :key="i" @click="$router.push('/goodsDetail')">
           <img class="goodsPic" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
           <div class="goodsMsg">
             <div class="title">牛子上衣</div>

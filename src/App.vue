@@ -18,7 +18,7 @@ export default {
 body {
   font-size: 14px;
   background: #f6f6f8;
-  -webkit-user-select:none ;
+  -webkit-user-select:none;
   -moz-user-select:none;
 }
 #app {

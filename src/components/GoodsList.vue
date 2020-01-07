@@ -39,7 +39,7 @@ export default {
         object-fit: cover;
       }
       .title {
-        color: #333333;
+        color: #444444;
         font-weight: bold;
         padding: 3px 8px;
         height: 46px;

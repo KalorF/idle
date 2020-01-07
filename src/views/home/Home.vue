@@ -73,7 +73,7 @@ export default {
     }
     div {
       margin-top: 2px;
-      color: #777777;
+      color: #666666;
     }
   }
 }
