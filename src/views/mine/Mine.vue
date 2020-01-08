@@ -36,13 +36,13 @@
     <div class="ctrl">
       <div class="title">闲置买卖</div>
       <div class="ctrlContent">
-        <div class="item">
+        <div class="item" @click="$router.push('/mypublishGoods')">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-dingdan"></use>
           </svg>
           <div>我发布的</div>
         </div>
-        <div class="item">
+        <div class="item" @click="$router.push('/myBuyGoods')">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-goumai"></use>
           </svg>
@@ -53,7 +53,7 @@
     <div class="ctrl">
       <div class="title">乐在其中</div>
       <div class="ctrlContent">
-        <div class="item">
+        <div class="item" @click="$router.push('/myDynamic')">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-duihua"></use>
           </svg>
@@ -167,7 +167,8 @@ export default {
     margin-left: 5px;
   }
   span:nth-child(3) {
-    color:#f1c40f;
+    color:#cc8e35;
+    font-size: 16px;
   }
 }
 </style>

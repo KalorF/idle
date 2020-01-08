@@ -17,6 +17,9 @@ const routes = [
   { path: '/goodsDetail', name: 'goodsDetail', component: () => import(/* webpackChunkName: "goodsDetail" */ '../views/goods/goodsDetail') },
   { path: '/buyGoodsMsg', name: 'buyGoodsMsg', component: () => import(/* webpackChunkName: "buyGoodsMsg" */ '../views/goods/buyGoodsMsg') },
   { path: '/mygoods', name: 'mygoods', component: () => import(/* webpackChunkName: "mygoods" */ '../views/goods/mygoods') },
+  { path: '/mypublishGoods', name: 'mypublishGoods', component: () => import(/* webpackChunkName: "mypublishGoods" */ '../views/mypublishGoods') },
+  { path: '/myBuyGoods', name: 'myBuyGoods', component: () => import(/* webpackChunkName: "mypublishGoods" */ '../views/myBuyGoods') },
+  { path: '/myDynamic', name: 'myDynamic', component: () => import(/* webpackChunkName: "myDynamic" */ '../views/myDynamic') },
   { path: '*', name: '404', component: () => import(/* webpackChunkName: "mine" */ '../views/404') }
 ]
 

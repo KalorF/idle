@@ -50,7 +50,7 @@ export default {
   position: fixed;
   background: #f6f6f6;
   width: 100%;
-  font-size: 18px;
+  font-size: 20px;
   z-index: 3;
   font-weight: bold;
 }

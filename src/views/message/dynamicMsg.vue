@@ -16,7 +16,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .dynMsgPage {
   position: relative;
   margin-top: 90px;
