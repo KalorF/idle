@@ -18,7 +18,7 @@
           微信：wechat4232dsa
         </div>
       </div>
-      <div class="set">
+      <div class="set" @click="$router.push('/setMsg')">
         <svg class="icon iconSize" aria-hidden="true">
           <use xlink:href="#icon-shezhi"></use>
         </svg>
@@ -59,7 +59,7 @@
           </svg>
           <div>我的动态</div>
         </div>
-        <div class="item">
+        <div class="item" @click="$router.push('/exchangeGoods')">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-liwu"></use>
           </svg>
@@ -113,7 +113,7 @@ export default {
   .set {
     margin-left: auto;
     font-size: 25px;
-    margin-right: 25px;
+    margin-right: 30px;
   }
 }
 .ctrl {
