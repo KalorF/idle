@@ -16,14 +16,14 @@
         <div>动态</div>
       </div>
     </router-link>
-    <router-link tag="div" class="footerItem" :to="{path: '/publish'}" replace>
+    <div class="footerItem" @click="showPublish = !showPublish">
       <div class="itemLink">
         <svg class="icon centerIcon" aria-hidden="true">
           <use xlink:href="#icon-qitake"></use>
         </svg>
         <div>发布</div>
       </div>
-    </router-link>
+    </div>
     <router-link tag="div" class="footerItem" :to="{path: '/message'}" replace>
       <div class="itemLink">
         <svg class="icon iconSize" aria-hidden="true">
@@ -40,12 +40,39 @@
         <div>我的</div>
       </div>
     </router-link>
+
+    <!-- 发布弹窗 -->
+    <transition name="hide">
+    <div class="pubDialog" v-if="showPublish">
+      <svg class="icon closeIcon" aria-hidden="true" @click="showPublish = false">
+        <use xlink:href="#icon-guanbi"></use>
+      </svg>
+      <div class="pubCtrl">
+        <div class="btn" @click="$router.push('/pgoods'), showPublish = false">
+          <svg class="icon size" aria-hidden="true">
+            <use xlink:href="#icon-xiangji"></use>
+          </svg>
+          <span>发布闲置</span>
+        </div>
+        <div class="btn" @click="$router.push('/pdynamic'), showPublish = false">
+          <svg class="icon size" aria-hidden="true">
+            <use xlink:href="#icon-shuru"></use>
+          </svg>
+          <span>发布动态</span>
+        </div>
+      </div>
+    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 export default {
-
+  data () {
+    return {
+      showPublish: false
+    }
+  }
 }
 </script>
 
@@ -54,7 +81,7 @@ export default {
   position: fixed;
   bottom: 0;
   // background: #FEFEFE;
-  background: rgba($color: #FEFEFE, $alpha: 0.97);
+  background: rgba($color: #FEFEFE, $alpha: 0.98);
   height: 65px;
   width: 100%;
   // border-top-left-radius: 20px;
@@ -93,5 +120,49 @@ export default {
       }
     }
   }
+}
+.pubDialog {
+  position: absolute;
+  height: 120px;
+  bottom: 64px;
+  width: 100%;
+  z-index: -1;
+  background: rgba($color: #FEFEFE, $alpha: 0.99);
+  .closeIcon {
+    font-size: 25px;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+  }
+  .pubCtrl {
+    position: relative;
+    margin-top: 48px;
+    display: flex;
+    justify-content: space-around;
+    .btn {
+      width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 45px;
+      background: rgba($color: #f5f6fa, $alpha: 0.9);
+      color: #555555;
+      border-radius: 7px;
+      // border: 1px solid #1FD8A0;
+      span {
+        margin-left: 5px;
+      }
+      .size {
+        font-size: 20px;
+      }
+    }
+  }
+}
+.hide-enter-active, .hide-leave-active {
+  transition: all .3s;
+}
+.hide-enter, .hide-leave-to {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
 }
 </style>

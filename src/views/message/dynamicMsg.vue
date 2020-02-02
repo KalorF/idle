@@ -1,6 +1,6 @@
 <template>
   <div class="dynMsgPage">
-    <div class="dynItem" v-for="i in 10" :key="i">
+    <div class="dynItem" v-for="i in 10" :key="i" @click="$router.push('/comments')">
       <div class="other">
         <div>衣服官方的风格的v小程序范德萨发生的范德萨范德萨发的是非得失发地方的身份古井贡酒环境发生的纠纷大家送福利倒计时了</div>
         <div>作者2回复了你></div>

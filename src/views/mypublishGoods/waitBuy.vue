@@ -17,7 +17,11 @@
             <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
             <div class="buyer">购买者1</div>
             <div class="state">待沟通</div>
+            <button class="btn">卖给</button>
           </div>
+        </div>
+        <div class="delctrl">
+          <button class="btn">取消发布</button>
         </div>
       </div>
     </div>
@@ -103,9 +107,39 @@ export default {
           color: #666666;
           margin-left: auto;
         }
+        .btn {
+          background: #ccae62;
+          color: #feffff;
+          outline: none;
+          border: 0;
+          height: 25px;
+          line-height: 25px;
+          border-radius: 5px;
+          width: 50px;
+          font-size: 13px;
+          margin-left: 10px;
+        }
       }
       .buyerItem:last-child {
         border-bottom: 0;
+      }
+    }
+    .delctrl {
+      position: relative;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      border-top: 1px solid #f5f7fa;
+      .btn {
+        margin-left: auto;
+        background: #e55039;
+        color: #feffff;
+        outline: none;
+        border: 0;
+        height: 32px;
+        line-height: 32px;
+        border-radius: 10px;
+        width: 100px;
       }
     }
   }

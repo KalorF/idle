@@ -23,6 +23,11 @@ const routes = [
   { path: '/exchangeGoods', name: 'exchangeGoods', component: () => import(/* webpackChunkName: "exchangeGoods" */ '../views/exchangeGoods') },
   { path: '/exchange', name: 'exchange', component: () => import(/* webpackChunkName: "exchange" */ '../views/exchangeGoods/exchange') },
   { path: '/setMsg', name: 'setMsg', component: () => import(/* webpackChunkName: "setMsg" */ '../views/mine/setMsg') },
+  { path: '/login', name: 'login', component: () => import(/* webpackChunkName: "login" */ '../views/loginAndregistr/login') },
+  { path: '/registry', name: 'registry', component: () => import(/* webpackChunkName: "registry" */ '../views/loginAndregistr/registry') },
+  { path: '/pdynamic', name: 'pdynamic', component: () => import(/* webpackChunkName: "pdynamic" */ '../views/publish/pdynamic') },
+  { path: '/pgoods', name: 'pgoods', component: () => import(/* webpackChunkName: "registry" */ '../views/publish/pgoods') },
+  { path: '/sort', name: 'sort', component: () => import(/* webpackChunkName: "sort" */ '../views/sort') },
   { path: '*', name: '404', component: () => import(/* webpackChunkName: "mine" */ '../views/404') }
 ]
 

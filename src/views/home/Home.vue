@@ -10,13 +10,16 @@
       <div class="barItem">
         <img src="@/assets/cmp.png">
         <div>电脑</div>
-      </div><div class="barItem">
+      </div>
+      <div class="barItem">
         <img src="@/assets/book.png">
         <div>图书</div>
-      </div><div class="barItem">
+      </div>
+      <div class="barItem">
         <img src="@/assets/clothes.png">
         <div>服装</div>
-      </div><div class="barItem">
+      </div>
+      <div class="barItem" @click="$router.push('/sort')">
         <img src="@/assets/type.png">
         <div>分类</div>
       </div>
