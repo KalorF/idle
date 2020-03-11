@@ -1,18 +1,41 @@
 <template>
   <div class="goodsList">
     <div class="goodContent">
-      <div class="goodsItem" v-for="i in 11" :key="i">
-        <img src="http://img4.imgtn.bdimg.com/it/u=504973260,2450831926&fm=11&gp=0.jpg" alt="">
-        <div class="title">手机特卖很过分很过分很高</div>
-        <div class="cost"><span>¥</span><span>1234</span></div>
+      <div class="goodsItem" v-for="(item, index) in goodsList" :key="index">
+        <img :src="item.goodsPics[0]" alt="">
+        <div class="title">{{ item.desc }}</div>
+        <div class="cost"><span>¥</span><span>{{ item.price }}</span></div>
+        <div class="seller">
+          <img src="@/assets/header.png" alt="">
+          <span>123</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import requestApi from '@/request/request'
 
+export default {
+  data () {
+    return {
+      goodsList: []
+    }
+  },
+  mounted () {
+    this.getGoodsList()
+  },
+  methods: {
+    getGoodsList () {
+      requestApi({
+        name: 'getHomeGoodsList',
+        data: { city: window.returnCitySN.cname.slice(-3) }
+      }).then(res => {
+        this.goodsList = res.data
+      })
+    }
+  }
 }
 </script>
 
@@ -32,6 +55,7 @@ export default {
       background: #ffffff;
       margin-bottom: 10px;
       display: flex;
+      position: relative;
       flex-direction: column;
       img {
         width: 100%;
@@ -42,7 +66,8 @@ export default {
         color: #444444;
         font-weight: bold;
         padding: 3px 8px;
-        height: 46px;
+        max-height: 46px;
+        min-height: 23px;
         overflow: hidden;
       }
       .cost {
@@ -54,6 +79,21 @@ export default {
         }
         span:nth-child(2) {
           font-size: 20px;
+        }
+      }
+      .seller {
+        position: absolute;
+        bottom: 3px;
+        display: flex;
+        align-items: center;
+        padding-left: 7px;
+        img {
+          width: 20px;
+          height: 20px;
+        }
+        span {
+          margin-left: 5px;
+          color: #777777;
         }
       }
     }

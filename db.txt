@@ -3,7 +3,7 @@
 
 2.商品类型表（两级）
 主键id 名称  父类型id
-
+confirmGoods
 3.商品表
 主键id  商品描述  价格  商品图片数组  类型id  卖家id   买家id（null）
 

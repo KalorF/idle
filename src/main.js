@@ -2,9 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Button, Field, Picker, Popup } from 'vant'
-Vue.use(Button).use(Field).use(Picker).use(Popup)
+import { Button, Field, Picker, Popup, Toast } from 'vant'
+Vue.use(Button).use(Field).use(Picker).use(Popup).use(Toast)
 Vue.config.productionTip = false
+Vue.prototype.$toast = Toast
 
 new Vue({
   router,

@@ -36,7 +36,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // console.log('beforeEach', to, from)
   if (to.matched.length === 0) {
     if (from.name) {
       next({
@@ -44,10 +43,9 @@ router.beforeEach((to, from, next) => {
       })
     } else {
       next('/404')
-      // errorReport('imgLoadError')
     }
   } else {
-    next() // 如果匹配到正确跳转
+    next()
   }
 })
 

@@ -53,7 +53,8 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
-
+// import requestApi from '@/request/request'
+import axios from 'axios'
 export default {
   components: { PageTran, Back },
 
@@ -76,9 +77,23 @@ export default {
   methods: {
     // 上传图片
     upload (e) {
-      let src = this.getObjectURL(e.target.files[0])
-      console.log(src)
-      this.imgList.push(src)
+      // let src = this.getObjectURL(e.target.files[0])
+      // console.log(src)
+      // this.imgList.push(src)
+      // const file = e.target.files[0]
+      // let params = new URLSearchParams()
+      // params.append('file', file)
+      // axios.post('/smms/upload', params, {
+      //   headers: { 'Content-Type': 'multipart/form-data' }
+      // }).then(res => {
+      //   console.log(res)
+      // })
+      const file = e.target.files[0]
+      let formData = new FormData()
+      formData.append('smfile', file)
+      axios.post('/smms/upload', formData, { header: { 'contentType': false } }).then(res => {
+        console.log(res)
+      })
     },
     getObjectURL (file) {
       var url = null

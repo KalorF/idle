@@ -10,25 +10,59 @@
         <svg class="icon logIcon" aria-hidden="true">
           <use xlink:href="#icon-yidongduanicon-"></use>
         </svg>
-        <input type="tel" placeholder="请输入手机号码">
+        <input v-model="phone" type="tel" placeholder="请输入手机号码">
       </div>
       <div class="loginItem">
         <svg class="icon logIcon" aria-hidden="true">
           <use xlink:href="#icon-mima"></use>
         </svg>
-        <input type="tel" placeholder="请输入账号密码">
+        <input v-model="password" type="password" placeholder="请输入账号密码">
       </div>
       <div class="registry">
         <div class="re" @click="$router.push('/registry')">注册账号></div>
       </div>
     </div>
-    <button class="lgbtn">登陆</button>
+    <button class="lgbtn" @click="login">登陆</button>
   </div>
 </template>
 
 <script>
+import requestApi from '@/request/request'
 export default {
-
+  data () {
+    return {
+      phone: '',
+      password: ''
+    }
+  },
+  methods: {
+    login () {
+      if (this.phone === '' && this.password === '') {
+        this.$toast('输入账号信息')
+      } else if (this.phone === '') {
+        this.$toast('输入账号')
+      } else if (this.password === '') {
+        this.$toast('输入密码')
+      } else {
+        this.loginApi()
+      }
+    },
+    loginApi () {
+      let data = { phone: this.phone, password: this.password }
+      requestApi({
+        name: 'login',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          localStorage.setItem('userInfo', JSON.stringify(res.data))
+          this.$toast.success('登陆成功')
+          this.$router.replace('/index')
+        } else {
+          this.$toast(`${res.msg}`)
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -86,6 +120,7 @@ export default {
       width: 90%;
       border: none;
       color: #666666;
+      padding-left: 5px;
     }
   }
   .registry {

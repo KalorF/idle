@@ -38,7 +38,12 @@
 import HomeHeader from './HomeHeader'
 import GoodsList from '@/components/GoodsList'
 export default {
-  components: { HomeHeader, GoodsList }
+  components: { HomeHeader, GoodsList },
+  created () {
+    if (!localStorage.getItem('userInfo')) {
+      this.$router.replace('/login')
+    }
+  }
 }
 </script>
 
