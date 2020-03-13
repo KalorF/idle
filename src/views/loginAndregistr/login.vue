@@ -54,7 +54,7 @@ export default {
         data
       }).then(res => {
         if (res.code === 200) {
-          localStorage.setItem('userInfo', JSON.stringify(res.data))
+          localStorage.setItem('userInfo', res.data._id)
           this.$toast.success('登陆成功')
           this.$router.replace('/index')
         } else {

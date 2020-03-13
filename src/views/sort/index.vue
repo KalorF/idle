@@ -5,17 +5,17 @@
       <div class="sortBox">
         <div class="left">
           <div
-            v-for="(i, index) in 8"
-            :key="index"
+            v-for="(value, key, i) in typeList"
+            :key="i"
             class="leftItem"
-            :class="{active: selIndex === index}"
-            @click="selType(index)"
-          >手机{{index}}</div>
+            :class="{active: selIndex === i}"
+            @click="selType(i, key)"
+          >{{ key }}</div>
         </div>
         <div class="right">
-          <div class="rightItem" v-for="i in 10" :key="i">
-            <img src="http://img0.imgtn.bdimg.com/it/u=492040588,2039661122&fm=26&gp=0.jpg" alt="">
-            <span>iphone</span>
+          <div class="rightItem" v-for="(item, index) in typeList[activeKey]" :key="index">
+            <img :src="item.pic" alt="">
+            <span>{{item.name}}</span>
           </div>
         </div>
       </div>
@@ -26,19 +26,45 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
 
 export default {
   components: { PageTran, Back },
 
   data () {
     return {
-      selIndex: 0
+      selIndex: 0,
+      activeKey: '',
+      typeList: {}
     }
   },
 
+  mounted () {
+    this.getTypeList()
+  },
+
   methods: {
-    selType (index) {
+    selType (index, key) {
       this.selIndex = index
+      this.activeKey = key
+    },
+
+    async getTypeList () {
+      const { data } = await requestApi({ name: 'typeList' })
+      let newdata = {}
+      data.forEach(item => {
+        if (item.children) {
+          newdata[item.name] = []
+          item.children.forEach(ite => {
+            newdata[item.name].push(ite)
+          })
+        } else {
+          newdata[item.name] = []
+        }
+      })
+      this.typeList = newdata
+      this.activeKey = Object.keys(this.typeList)[0]
+      console.log(this.typeList[this.activeKey])
     }
   }
 }
@@ -76,7 +102,7 @@ export default {
     text-align: center;
     font-size: 16px;
     color: #aaaaaa;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   .leftItem.active {
     border-left: 4px solid #ccae62;
@@ -104,7 +130,7 @@ export default {
     span {
       font-size: 15px;
       color: #444444;
-      margin-top: 3px;
+      margin-top: 5px;
     }
   }
 }

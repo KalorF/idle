@@ -5,28 +5,27 @@
       <div class="detailContent">
         <!-- 发布者信息 -->
         <div class="puberMsg">
-          <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg">
+          <!-- <img v-if="goodsData.seller && goodsData.seller.avatars" :src="goodsData.seller.avatars" alt=""> -->
+          <img src="@/assets/header.png">
           <div class="other">
-            <span>发布者2</span>
-            <div>2020-01-05 13:22</div>
+            <span v-if="goodsData.seller">{{ goodsData.seller.username }}</span>
+            <div>发布时间：{{ goodsData.createTime | formatDate }}</div>
           </div>
         </div>
         <!-- 商品信息 -->
         <div class="goodsMsg">
-          <div class="price"><span>¥</span><span>345</span></div>
-          <div class="describe">发挥撒卢卡申科了哪里呢</div>
+          <div class="price"><span>¥</span><span>{{ goodsData.price }}</span></div>
+          <div class="describe">{{ goodsData.desc }}</div>
           <div class="picBox">
-            <img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3464651440,3067509266&fm=26&gp=0.jpg" alt="">
-            <img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3726195294,2128069772&fm=26&gp=0.jpg" alt="">
-            <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1063282716,963145649&fm=26&gp=0.jpg" alt="">
-            <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1396304386,248920309&fm=26&gp=0.jpg" alt="">
+            <img v-for="(item, index) in goodsData.goodsPics" :key="index" :src="item" alt="">
           </div>
         </div>
       </div>
       <!-- 底部按钮 -->
       <div class="footerCtrl">
-        <div class="price">价格：<span>¥345</span></div>
-        <button class="btn" @click="$router.push('/buyGoodsMsg')">我想要</button>
+        <div class="price">价格：<span>¥{{ goodsData.price }}</span></div>
+        <button v-if="goodsData.seller && goodsData.seller._id === mine" class="btn">我发布的</button>
+        <button v-else class="btn" @click="tobuy">我想要</button>
       </div>
     </div>
   </PageTran>
@@ -35,9 +34,57 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+import { formatDate } from '@/common/date.js'
 
 export default {
-  components: { PageTran, Back }
+  components: { PageTran, Back },
+
+  data () {
+    return {
+      goodsData: {},
+      mine: localStorage.getItem('userInfo')
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  filters: {
+    formatDate (time) {
+      var date = new Date(parseInt(time))
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
+    }
+  },
+
+  methods: {
+    tobuy () {
+      let data = { goodsId: this.goodsData._id, buyerId: localStorage.getItem('userInfo') }
+      requestApi({
+        name: 'createOrder',
+        data
+      }).then(res => {
+        if (res.code === 204) {
+          this.$toast('你已购买过此商品，无需重新购买')
+        } else {
+          this.$router.push({ name: 'buyGoodsMsg', params: { data: this.goodsData } })
+        }
+      })
+    },
+
+    // 获取数据
+    getData () {
+      const { id } = this.$route.query
+      const data = { id }
+      requestApi({
+        name: 'goodsDetail',
+        data
+      }).then(res => {
+        this.goodsData = res.data
+      })
+    }
+  }
 }
 </script>
 
@@ -108,6 +155,7 @@ export default {
       display: flex;
       overflow: hidden;
       flex-direction: column;
+      padding-top: 10px;
       img {
         margin-bottom: 10px;
       }

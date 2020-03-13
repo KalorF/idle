@@ -1,13 +1,14 @@
 <template>
   <div class="goodsList">
     <div class="goodContent">
-      <div class="goodsItem" v-for="(item, index) in goodsList" :key="index">
+      <div class="goodsItem" @click="$router.push({path: '/goodsDetail', query: { id: item._id }})" v-for="(item, index) in goodsList" :key="index">
         <img :src="item.goodsPics[0]" alt="">
         <div class="title">{{ item.desc }}</div>
         <div class="cost"><span>¥</span><span>{{ item.price }}</span></div>
         <div class="seller">
-          <img src="@/assets/header.png" alt="">
-          <span>123</span>
+          <img v-if="item.seller.avatars !== ''" :src="item.seller.avatars" alt="">
+          <img v-else src="@/assets/header.png" alt="">
+          <span>{{ item.seller.username }}</span>
         </div>
       </div>
     </div>
@@ -23,7 +24,7 @@ export default {
       goodsList: []
     }
   },
-  mounted () {
+  activated () {
     this.getGoodsList()
   },
   methods: {
@@ -66,7 +67,7 @@ export default {
         color: #444444;
         font-weight: bold;
         padding: 3px 8px;
-        max-height: 46px;
+        max-height: 40px;
         min-height: 23px;
         overflow: hidden;
       }

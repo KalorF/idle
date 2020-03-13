@@ -34,7 +34,7 @@
           placeholder="输入商品价格"
         />
         <div class="ctrl">
-          <button type="button" class="btn">发布</button>
+          <button type="button" class="btn" @click="publish">发布</button>
         </div>
       </div>
 
@@ -53,7 +53,7 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
-// import requestApi from '@/request/request'
+import requestApi from '@/request/request'
 import axios from 'axios'
 export default {
   components: { PageTran, Back },
@@ -65,8 +65,13 @@ export default {
       typeVal: '',
       showPicker: false,
       price: '',
-      columns: []
+      columns: [],
+      typeList: {}
     }
+  },
+
+  activated () {
+    this.getTypeList()
   },
 
   beforeRouteLeave (to, from, next) {
@@ -77,22 +82,13 @@ export default {
   methods: {
     // 上传图片
     upload (e) {
-      // let src = this.getObjectURL(e.target.files[0])
-      // console.log(src)
-      // this.imgList.push(src)
-      // const file = e.target.files[0]
-      // let params = new URLSearchParams()
-      // params.append('file', file)
-      // axios.post('/smms/upload', params, {
-      //   headers: { 'Content-Type': 'multipart/form-data' }
-      // }).then(res => {
-      //   console.log(res)
-      // })
       const file = e.target.files[0]
-      let formData = new FormData()
-      formData.append('smfile', file)
-      axios.post('/smms/upload', formData, { header: { 'contentType': false } }).then(res => {
-        console.log(res)
+      let forms = new FormData()
+      forms.append('file', file)
+      axios.post(`${process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_BASE_API}/user/uploadPics`, forms, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(res => {
+        this.imgList.push(res.data.data.url)
       })
     },
     getObjectURL (file) {
@@ -117,19 +113,61 @@ export default {
     },
     // 选择类别
     handlePicker () {
-      const typeList = {
-        '浙江': ['杭州', '宁波', '温州', '嘉兴', '湖州'],
-        '福建': ['福州', '厦门', '莆田', '三明', '泉州']
-      }
+      const typeList = this.typeList
       this.columns = [{
         values: Object.keys(typeList),
         className: 'column1'
       },
       {
-        values: typeList['浙江'],
+        values: typeList[Object.keys(typeList)[0]],
         className: 'column2'
       }]
       this.showPicker = true
+    },
+
+    // 发布商品
+    publish () {
+      if (this.content === '') {
+        this.$toast('请输入商品描述')
+      } else if (this.typeVal === '') {
+        this.$toast('请选择商品类型')
+      } else if (!this.imgList.length) {
+        this.$toast('请上传商品图片')
+      } else if (this.price === '') {
+        this.$toast('请输入价格')
+      } else {
+        this.publishApi()
+      }
+    },
+
+    publishApi () {
+      let seller = localStorage.getItem('userInfo')
+      let city = window.returnCitySN.cname.slice(-3)
+      const data = { desc: this.content, price: this.price, typeName: this.typeVal, goodsPics: this.imgList, seller, city }
+      requestApi({
+        name: 'publishGoods',
+        data
+      }).then(res => {
+        this.$toast('发布成功')
+        setTimeout(() => {
+          this.$router.push('/index')
+        }, 1000)
+      })
+    },
+
+    // 获取商品类型
+    async getTypeList () {
+      const { data } = await requestApi({ name: 'typeList' })
+      let newdata = {}
+      data.forEach(item => {
+        if (item.children) {
+          newdata[item.name] = []
+          item.children.forEach(ite => {
+            newdata[item.name].push(ite.name)
+          })
+        }
+      })
+      this.typeList = newdata
     }
   }
 }

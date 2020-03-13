@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="ctrl">
-        <button class="btn">退出登陆</button>
+        <button class="btn" @click="loginOut">退出登陆</button>
       </div>
     </div>
   </PageTran>
@@ -40,7 +40,14 @@
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
 export default {
-  components: { PageTran, Back }
+  components: { PageTran, Back },
+
+  methods: {
+    loginOut () {
+      localStorage.removeItem('userInfo')
+      this.$router.replace('/login')
+    }
+  }
 }
 </script>
 

@@ -1,31 +1,67 @@
 <template>
   <div class="hadBuyPage">
     <div class="goodsBox">
-      <div class="goodsItem" v-for="i in 7" :key="i">
+      <div class="goodsItem" v-for="(item, index) in goodsList" :key="index">
         <div class="goodsMsg">
           <div class="titleAndprice">
-            <p class="p1">加热发多少</p>
-            <p class="p2"><span>¥</span><span>345</span></p>
+            <p class="p1">{{ item.desc }}</p>
+            <p class="p2"><span>¥</span><span>{{ item.price }}</span></p>
           </div>
-          <div class="imgbox">
-            <img src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
-            <div class="number">6张</div>
+          <div class="imgbox" @click="viewImg(item.goodsPics)">
+            <img :src="item.goodsPics[0]" alt="">
+            <div class="number">{{ item.goodsPics.length }}张</div>
           </div>
         </div>
         <div class="buyerbox">
           <div class="buyerItem">
             <div class="state">购买者</div>
-            <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
-            <div class="buyer">购买者1</div>
+            <img v-if="item.buyer.avatars === ''" src="@/assets/header.png" alt="">
+            <img v-else :src="item.buyer.avatars" alt="">
+            <div class="buyer">{{ item.buyer.username }}</div>
           </div>
         </div>
       </div>
+    </div>
+
+    <div v-if="!goodsList.length" class="nogoods">
+      无相关闲置品信息
     </div>
   </div>
 </template>
 
 <script>
+import requestApi from '@/request/request'
+import { ImagePreview } from 'vant'
+
 export default {
+  data () {
+    return {
+      goodsList: []
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  mounted () {
+    this.getData()
+  },
+
+  methods: {
+    viewImg (imgs) {
+      ImagePreview(imgs)
+    },
+    getData () {
+      let data = { seller: localStorage.getItem('userInfo'), status: 1 }
+      requestApi({
+        name: 'viewMygoods',
+        data
+      }).then(res => {
+        this.goodsList = res.data
+      })
+    }
+  }
 
 }
 </script>
@@ -34,6 +70,11 @@ export default {
 .hadBuyPage {
   position: relative;
   margin-top: 105px;
+}
+.nogoods {
+  text-align: center;
+  color: #777777;
+  padding-top: 10px;
 }
 .goodsBox {
   position: static;

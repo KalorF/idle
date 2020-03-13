@@ -4,18 +4,19 @@
       <Back title="商品" @back="$router.go(-1)" />
       <div class="goodsBox">
         <div class="goodsItem">
-          <img class="goodsPic" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
+          <img class="goodsPic" :src="msg.goodsPics[0]" alt="">
           <div class="goodsMsg">
-            <div class="title">牛子上衣</div>
-            <div class="price"><span>¥</span><span>123</span></div>
+            <div class="title">{{ msg.desc }}</div>
+            <div class="price"><span>¥</span><span>{{ msg.price }}</span></div>
             <div class="publishUser">
-              <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="发布者">
-              <span>发布者1</span>
+              <img v-if="msg.seller && msg.seller.avatars === ''" src="@/assets/header.png" alt="">
+              <img v-else :src="msg.seller.avatars" alt="发布者">
+              <span>{{ msg.seller.username }}</span>
             </div>
           </div>
         </div>
-        <div class="ctrl" v-if="!isShowContact" @click="isShowContact = true">
-          <button class="btn">确认购买</button>
+        <div class="ctrl" v-if="!isShowContact">
+          <button class="btn" @click="confirmBuy" >确认购买</button>
         </div>
         <div class="contact" v-if="isShowContact">
           <div class="tip">--- 用以下方式与买家取得联系 ---</div>
@@ -24,18 +25,18 @@
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianhua"></use>
               </svg>
-              手机：15687678687
+              手机：{{ msg.seller.phone }}
             </div>
             <div class="wechat">
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-weixin"></use>
               </svg>
-              微信：wechat4232dsa
+              微信：{{ msg.seller.wechat }}
             </div>
           </div>
           <div class="ctrl2">
-            <div>状态：待收货</div>
-            <button class="btn2">确认收货</button>
+            <div>状态：待沟通</div>
+            <button class="btn2" @click="$router.replace('/myBuyGoods')">查看订单 ></button>
           </div>
         </div>
       </div>
@@ -46,11 +47,45 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+import { Dialog } from 'vant'
 export default {
   components: { PageTran, Back },
   data () {
     return {
-      isShowContact: false
+      isShowContact: false,
+      msg: this.$route.params.data
+    }
+  },
+
+  beforeRouteLeave (to, from, next) {
+    this.$destroy()
+    next()
+  },
+
+  methods: {
+    confirmBuy () {
+      Dialog.confirm({
+        title: '提示',
+        message: '是否确认购买此商品？'
+      }).then(() => {
+        this.buyApi()
+      }).catch(() => {
+        this.isShowContact = false
+      })
+    },
+
+    buyApi () {
+      let data = { goodsId: this.msg._id, buyerId: localStorage.getItem('userInfo'), status: '1' }
+      requestApi({
+        name: 'createOrder',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast('购买成功')
+          this.isShowContact = true
+        }
+      })
     }
   }
 }
