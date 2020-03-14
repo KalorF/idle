@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="ctrl">
-          <button type="button" class="btn">发布</button>
+          <button type="button" class="btn" @click="pubDynamic">发布</button>
         </div>
       </div>
     </div>
@@ -35,6 +35,8 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+import axios from 'axios'
 
 export default {
   components: { PageTran, Back },
@@ -54,9 +56,14 @@ export default {
   methods: {
     // 上传图片
     upload (e) {
-      let src = this.getObjectURL(e.target.files[0])
-      console.log(src)
-      this.imgList.push(src)
+      const file = e.target.files[0]
+      let forms = new FormData()
+      forms.append('file', file)
+      axios.post(`${process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_BASE_API}/user/uploadPics`, forms, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(res => {
+        this.imgList.push(res.data.data.url)
+      })
     },
     getObjectURL (file) {
       var url = null
@@ -68,6 +75,28 @@ export default {
         url = window.webkitURL.createObjectURL(file)
       }
       return url
+    },
+
+    pubDynamic () {
+      if (!this.imgList.length && this.content === '') {
+        this.$toast('请输入动态信息')
+      } else {
+        this.pubApi()
+      }
+    },
+    pubApi () {
+      let data = { publisher: localStorage.getItem('userInfo'), pics: this.imgList, content: this.content, city: window.returnCitySN.cname.slice(-3) }
+      requestApi({
+        name: 'publishDynamic',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast('发表成功')
+          setTimeout(() => {
+            this.$router.replace('/dynamic')
+          }, 1000)
+        }
+      })
     },
     // 删除图片
     delImg (index) {

@@ -150,7 +150,7 @@ export default {
       }).then(res => {
         this.$toast('发布成功')
         setTimeout(() => {
-          this.$router.push('/index')
+          this.$router.replace('/index')
         }, 1000)
       })
     },

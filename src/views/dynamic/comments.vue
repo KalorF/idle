@@ -6,44 +6,60 @@
       <div class="dynamicBox">
         <div class="dynamicItem">
           <div class="author">
-            <img class="headerPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+            <img class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars === ''" src="@/assets/header.png" alt="">
+            <img class="headerPic" v-else src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
             <div class="otherMsg">
-              <span>作者1</span>
-              <div>01-03 12:00</div>
-            </div>
-          </div>
-          <div class="content">
-            南方的是非得失你v呈现出小女人离开你是看vsee是愤怒的说是你的女生短发女生的康师傅
-          </div>
-          <div class="imgContent">
-            <div v-for="i in 5" :key="i" class="imgItem" :style="{backgroundImage: 'url(' + 'http://img0.imgtn.bdimg.com/it/u=492040588,2039661122&fm=26&gp=0.jpg' + ')'}"></div>
-          </div>
-        </div>
-      </div>
-      <!-- 用户评论 -->
-      <div class="userComments">
-        <div class="cmtHeader">
-          评论 · 123
-        </div>
-        <div class="cmtBox" v-for="i in 20" :key="i">
-          <div class="headerBox">
-            <img class="userPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
-            <div class="other">
-              <span>用户1</span>
-              <div>01-03 12:00</div>
+              <span v-if="cmtData.publisher">{{ cmtData.publisher.username }}</span>
+              <div>{{ cmtData.creteTime | formatDate }}</div>
             </div>
             <div class="givelike">
-              <span>342</span>
+              <span>{{ cmtData.likeNum }}</span>
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
             </div>
           </div>
           <div class="content">
-            发放第三方的是非得失
+            {{ cmtData.content }}
           </div>
-          <div class="viewCmt" @click="$router.push('/otherCmt')">
-            188条回复>
+          <div class="imgContent">
+            <div
+              v-for="(item, index) in cmtData.pics"
+              :key="index" class="imgItem"
+              :style="{backgroundImage: 'url(' + item + ')'}"
+              @click="viewImgs(cmtData.pics, index)"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <!-- 用户评论 -->
+      <div class="userComments">
+        <div class="cmtHeader" v-if="cmtData.comments && cmtData.comments.length">
+          评论 · {{ cmtData.comments.length }}
+        </div>
+        <div v-else class="cmtHeader">
+          留下你的精彩评论吧
+        </div>
+        <div class="cmtBox" v-for="(item, index) in (cmtData.comments)" :key="index">
+          <div class="headerBox">
+            <img class="userPic" v-if="item.reviewer.avatars === ''" src="@/assets/header.png" alt="">
+            <img v-else class="userPic" src="" alt="">
+            <div class="other">
+              <span>{{ item.reviewer._id === cmtData.publisher._id ? item.reviewer.username + '（作者）' :  item.reviewer.username }}</span>
+              <div>{{ item.createTime | formatDate }}</div>
+            </div>
+            <div class="givelike">
+              <span>{{ item.linkeNum }}</span>
+              <svg class="icon iconSize" aria-hidden="true">
+                <use xlink:href="#icon-dianzan"></use>
+              </svg>
+            </div>
+          </div>
+          <div class="content">
+            {{ item.content }}
+          </div>
+          <div v-if="item.eotoes" class="viewCmt" @click="$router.push('/otherCmt')">
+            {{ item.eotoes }}条回复>
           </div>
         </div>
       </div>
@@ -55,9 +71,10 @@
           rows="1"
           autosize
           type="textarea"
-          placeholder="请输入你的评论"
+          :placeholder="placeholder"
+          @blur="blur"
         />
-        <div class="pub">发送</div>
+        <div class="pub" @click="pubCmt">发送</div>
       </div>
     </div>
   </PageTran>
@@ -66,11 +83,71 @@
 <script>
 import Back from '@/components/Back.vue'
 import PageTran from '@/components/PageTran.vue'
+import requestApi from '@/request/request'
+import { formatDate } from '@/common/date.js'
+import { ImagePreview } from 'vant'
+
 export default {
   components: { Back, PageTran },
   data () {
     return {
-      message: ''
+      cmtData: {},
+      message: '',
+      placeholder: '请输入你的评论'
+    }
+  },
+
+  filters: {
+    formatDate (time) {
+      var date = new Date(parseInt(time))
+      return formatDate(date, 'MM-dd hh:mm')
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  methods: {
+    viewImgs (imgs, index) {
+      ImagePreview({
+        images: imgs,
+        startPosition: index
+      })
+    },
+
+    pubCmt () {
+      if (this.message === '') {
+        this.$toast('输入要评论的内容')
+      } else {
+        this.pubCmtApi()
+      }
+    },
+
+    pubCmtApi () {
+      let data = { content: this.message, dynamic: this.cmtData._id, reviewer: localStorage.getItem('userInfo') }
+      requestApi({
+        name: 'addComment',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.getData()
+          this.$toast('评论成功')
+        }
+      })
+    },
+
+    blur () {
+      this.placeholder = '请输入你的评论'
+    },
+
+    getData () {
+      requestApi({
+        name: 'viewDymCom',
+        data: { dynamicId: this.$route.query.id }
+      }).then(res => {
+        this.cmtData = res.data
+      })
     }
   }
 }
@@ -120,6 +197,14 @@ export default {
         div {
           font-size: 12px;
           color: #aaaaaa;
+        }
+      }
+      .givelike {
+        margin-left: auto;
+        span {
+          font-size: 13px;
+          color: #555555;
+          margin-right: 5px;
         }
       }
     }

@@ -40,8 +40,8 @@ export default {
     }
   },
 
-  activated () {
-    this.getData()
+  beforeRouteLeave (to, from, next) {
+    this.$destroy()
   },
 
   mounted () {

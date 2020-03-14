@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <div class="header">
       <span>动态</span>
-      <div class="publish">
+      <div class="publish" @click="$router.push('/pdynamic')">
         <svg class="icon iconSize" aria-hidden="true">
           <use xlink:href="#icon-shuru"></use>
         </svg>
@@ -12,32 +12,38 @@
     </div>
     <!-- 动态内容 -->
     <div class="dynamicBox">
-      <div class="dynamicItem" v-for="i in 10" :key="i">
+      <div class="dynamicItem" v-for="(item, index) in dynamicList" :key="index">
         <div class="author">
-          <img class="headerPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+          <img v-if="item.publisher.avatars === ''" class="headerPic" src="@/assets/header.png" alt="">
+          <img v-else class="headerPic" :src="item.publisher.avatars" alt="">
           <div class="otherMsg">
-            <span>作者1</span>
-            <div>01-03 12:00</div>
+            <span>{{ item.publisher.username }}</span>
+            <div>{{ item.creteTime | formatDate }}</div>
           </div>
         </div>
         <div class="content">
-          南方的是非得失你v呈现出小女人离开你是看vsee是愤怒的说是你的女生短发女生的康师傅
+          {{ item.content }}
         </div>
         <div class="imgContent">
-          <div v-for="i in 5" :key="i" class="imgItem" :style="{backgroundImage: 'url(' + 'http://img0.imgtn.bdimg.com/it/u=492040588,2039661122&fm=26&gp=0.jpg' + ')'}"></div>
+          <div
+            v-for="(ite, index) in item.pics"
+            :key="index" class="imgItem"
+            :style="{backgroundImage: 'url(' + ite + ')'}"
+            @click="viewImgs(item.pics, index)"
+          ></div>
         </div>
         <div class="ctrl">
-          <div class="comments" @click="$router.push('/comments')">
+          <div class="comments" @click="$router.push({ path: '/comments', query: {id : item._id} })">
             <svg class="icon iconSize" aria-hidden="true">
               <use xlink:href="#icon-duihua"></use>
             </svg>
-            <span>356</span>
+            <span>{{ item.commentNub }}</span>
           </div>
-          <div class="giveLike">
+          <div class="giveLike" @click="$router.push({ path: '/comments', query: {id : item._id} })">
             <svg class="icon iconSize" aria-hidden="true">
               <use xlink:href="#icon-dianzan"></use>
             </svg>
-            <span>7098</span>
+            <span>{{ item.likeNum }}</span>
           </div>
         </div>
       </div>
@@ -46,8 +52,47 @@
 </template>
 
 <script>
-export default {
+import requestApi from '@/request/request'
+import { formatDate } from '@/common/date.js'
+import { ImagePreview } from 'vant'
 
+export default {
+  data () {
+    return {
+      dynamicList: []
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  filters: {
+    formatDate (time) {
+      var date = new Date(parseInt(time))
+      return formatDate(date, 'MM-dd hh:mm')
+    }
+  },
+
+  methods: {
+    viewImgs (imgs, index) {
+      ImagePreview({
+        images: imgs,
+        startPosition: index
+      })
+    },
+
+    getData () {
+      requestApi({
+        name: 'getDynamicList',
+        data: { city: window.returnCitySN.cname.slice(-3) }
+      }).then(res => {
+        if (res.code === 200) {
+          this.dynamicList = res.data
+        }
+      })
+    }
+  }
 }
 </script>
 

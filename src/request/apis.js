@@ -49,5 +49,21 @@ export default {
   sellToSb: {
     url: '/goods/sellToSb',
     method: 'post'
+  },
+  publishDynamic: {
+    url: '/dynamic/publishDynamic',
+    method: 'post'
+  },
+  getDynamicList: {
+    url: '/dynamic/getPublish',
+    method: 'get'
+  },
+  viewDymCom: {
+    url: '/dynamic/viewDymCom',
+    method: 'get'
+  },
+  addComment: {
+    url: '/comment/addComment',
+    method: 'post'
   }
 }
