@@ -65,5 +65,25 @@ export default {
   addComment: {
     url: '/comment/addComment',
     method: 'post'
+  },
+  addReply: {
+    url: '/reply/addReply',
+    method: 'post'
+  },
+  viewCommentReply: {
+    url: '/reply/viewCommentReply',
+    method: 'get'
+  },
+  getUserInfo: {
+    url: '/user/getUserInfo',
+    method: 'post'
+  },
+  modifyUserInfo: {
+    url: '/user/modifyUserInfo',
+    method: 'post'
+  },
+  modifyPwd: {
+    url: '/user/modifyPwd',
+    method: 'post'
   }
 }

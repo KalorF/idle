@@ -5,25 +5,29 @@
       <div class="msgBox">
         <div class="hederImgItem">
           <div>头像</div>
-          <img class="pic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+          <div class="header">
+            <input class="fileInput" type="file" accept="image/*" @change="upload">
+            <img v-if="userInfo.avatars === ''" class="pic" src="@/assets/header.png" alt="">
+            <img v-else class="pic" :src="userInfo.avatars" alt="">
+          </div>
           <img class="forward" src="@/assets/forward.png" alt="">
         </div>
-        <div class="item">
+        <div class="item" @click="setItem('name')">
           <div>呢称</div>
-          <div class="text">我就是我</div>
+          <div class="text">{{ userInfo.username }}</div>
           <img class="forward" src="@/assets/forward.png" alt="">
         </div>
-        <div class="item">
+        <div class="item" @click="$toast('手机号无法修改哦')">
           <div>手机号码</div>
-          <div class="text">15678902345</div>
+          <div class="text">{{ userInfo.phone }}</div>
           <img class="forward" src="@/assets/forward.png" alt="">
         </div>
-        <div class="item">
+        <div class="item" @click="setItem('wechat')">
           <div>微信</div>
-          <div class="text">wechat2131</div>
+          <div class="text">{{ userInfo.wechat }}</div>
           <img class="forward" src="@/assets/forward.png" alt="">
         </div>
-        <div class="item">
+        <div class="item" @click="$router.push('/modifyPwd')">
           <div>修改密码</div>
           <div class="text"></div>
           <img class="forward" src="@/assets/forward.png" alt="">
@@ -32,6 +36,9 @@
       <div class="ctrl">
         <button class="btn" @click="loginOut">退出登陆</button>
       </div>
+      <van-dialog v-model="showDialog" :title="dialogTitle" @confirm="handleConfirm" @cancel="dialogVal = '', this.dialogTitle = ''" confirmButtonText="确认修改" cancelButtonText="取消修改" show-cancel-button>
+        <van-field v-model="dialogVal" placeholder="请输入修改内容" :label="lable" />
+      </van-dialog>
     </div>
   </PageTran>
 </template>
@@ -39,10 +46,88 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import { Dialog } from 'vant'
+import requestApi from '@/request/request'
+import axios from 'axios'
+
 export default {
-  components: { PageTran, Back },
+  components: { PageTran, Back, [Dialog.Component.name]: Dialog.Component },
+
+  data () {
+    return {
+      userInfo: '',
+      dialogTitle: '',
+      lable: '呢称',
+      dialogVal: '',
+      showDialog: false
+    }
+  },
+
+  activated () {
+    this.getUserInfo()
+  },
 
   methods: {
+    getUserInfo () {
+      const data = { userId: localStorage.getItem('userInfo') }
+      requestApi({
+        name: 'getUserInfo',
+        data
+      }).then(res => {
+        this.userInfo = res.data
+      })
+    },
+
+    upload (e) {
+      const file = e.target.files[0]
+      let forms = new FormData()
+      forms.append('file', file)
+      axios.post(`${process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_BASE_API}/user/uploadPics`, forms, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(res => {
+        this.modifyApi(res.data.data.url)
+      })
+    },
+
+    setItem (type) {
+      if (type === 'name') {
+        this.lable = '呢称'
+        this.dialogTitle = '修改呢称'
+        this.dialogVal = this.userInfo.username
+      } else {
+        this.lable = '微信'
+        this.dialogVal = this.userInfo.wechat
+        this.dialogTitle = '修改微信'
+      }
+      this.showDialog = true
+    },
+
+    handleConfirm () {
+      this.dialogVal === '' ? this.$toast('请输入要修改的内容') : this.modifyApi()
+    },
+
+    modifyApi (avatars = '') {
+      let data = {}
+      if (this.dialogTitle === '修改呢称') {
+        data = { userId: localStorage.getItem('userInfo'), username: this.dialogVal }
+      } else if (this.dialogTitle === '修改微信') {
+        data = { userId: localStorage.getItem('userInfo'), wechat: this.dialogVal }
+      } else {
+        data = { userId: localStorage.getItem('userInfo'), avatars }
+      }
+      requestApi({
+        name: 'modifyUserInfo',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast('修改成功')
+          this.showDialog = false
+          this.dialogTitle = ''
+          this.getUserInfo()
+        }
+      })
+    },
+
     loginOut () {
       localStorage.removeItem('userInfo')
       this.$router.replace('/login')
@@ -83,12 +168,21 @@ export default {
     align-items: center;
     border-bottom: 1px solid #f5f7fa;
     padding-bottom: 5px;
-    .pic {
+    .header {
       margin-left: auto;
-      width: 70px;
-      height: 70px;
-      border-radius: 7px;
-      object-fit: cover;
+      position: relative;
+      .fileInput {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+      }
+      .pic {
+        width: 70px;
+        height: 70px;
+        border-radius: 7px;
+        object-fit: cover;
+      }
     }
     .forward {
       width: 20px;

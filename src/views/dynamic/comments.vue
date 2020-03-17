@@ -7,7 +7,7 @@
         <div class="dynamicItem">
           <div class="author">
             <img class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars === ''" src="@/assets/header.png" alt="">
-            <img class="headerPic" v-else src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+            <img class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars !== ''" :src="cmtData.publisher.avatars" alt="">
             <div class="otherMsg">
               <span v-if="cmtData.publisher">{{ cmtData.publisher.username }}</span>
               <div>{{ cmtData.creteTime | formatDate }}</div>
@@ -44,7 +44,7 @@
           <div class="headerBox">
             <img class="userPic" v-if="item.reviewer.avatars === ''" src="@/assets/header.png" alt="">
             <img v-else class="userPic" src="" alt="">
-            <div class="other">
+            <div class="other" @click="toReplay(item)">
               <span>{{ item.reviewer._id === cmtData.publisher._id ? item.reviewer.username + '（作者）' :  item.reviewer.username }}</span>
               <div>{{ item.createTime | formatDate }}</div>
             </div>
@@ -55,10 +55,10 @@
               </svg>
             </div>
           </div>
-          <div class="content">
+          <div class="content" @click="toReplay(item)">
             {{ item.content }}
           </div>
-          <div v-if="item.eotoes" class="viewCmt" @click="$router.push('/otherCmt')">
+          <div v-if="item.eotoes" class="viewCmt" @click="$router.push({ path: '/otherCmt', query: {id: item._id} })">
             {{ item.eotoes }}条回复>
           </div>
         </div>
@@ -72,6 +72,7 @@
           autosize
           type="textarea"
           :placeholder="placeholder"
+          ref="contentInput"
           @blur="blur"
         />
         <div class="pub" @click="pubCmt">发送</div>
@@ -93,7 +94,10 @@ export default {
     return {
       cmtData: {},
       message: '',
-      placeholder: '请输入你的评论'
+      placeholder: '请输入你的评论',
+      isReply: false,
+      comment: '',
+      replyToSb: ''
     }
   },
 
@@ -116,11 +120,12 @@ export default {
       })
     },
 
+    // 发表评论
     pubCmt () {
       if (this.message === '') {
         this.$toast('输入要评论的内容')
       } else {
-        this.pubCmtApi()
+        this.isReply ? this.replyApi() : this.pubCmtApi()
       }
     },
 
@@ -131,14 +136,45 @@ export default {
         data
       }).then(res => {
         if (res.code === 200) {
-          this.getData()
           this.$toast('评论成功')
+          this.message = ''
+          this.isReply = false
+          this.getData()
         }
       })
     },
 
     blur () {
       this.placeholder = '请输入你的评论'
+    },
+
+    // 回复某人
+    toReplay (item) {
+      if (item.reviewer._id === localStorage.getItem('userInfo')) {
+        this.$toast('无法回复自己哦')
+      } else {
+        this.$refs.contentInput.focus()
+        this.placeholder = '回复' + item.reviewer.username
+        this.comment = item._id
+        this.replyToSb = item.reviewer._id
+        this.isReply = true
+      }
+    },
+
+    replyApi () {
+      let data = { comment: this.comment, replyer: localStorage.getItem('userInfo'), replyToSb: this.replyToSb, content: this.message }
+      requestApi({
+        name: 'addReply',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast('评论成功')
+          this.$refs.contentInput.blur()
+          this.replyer = false
+          this.message = ''
+          this.getData()
+        }
+      })
     },
 
     getData () {
@@ -234,7 +270,7 @@ export default {
     height: 40px;
     line-height: 40px;
     padding-left: 10px;
-    font-size: 17px;
+    font-size: 14px;
     border-bottom: 1px solid #f5f7fa;
   }
   .cmtBox {

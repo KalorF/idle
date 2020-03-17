@@ -2,20 +2,21 @@
   <div class="minePage">
     <!-- 个人信息 -->
     <div class="mineMsg">
-      <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+      <img v-if="userInfo.avatars === ''" src="@/assets/header.png" alt="">
+      <img v-else :src="userInfo.avatars" alt="">
       <div class="msg">
-        <div class="name">我就是我</div>
+        <div class="name">{{ userInfo.username }}</div>
         <div class="phone">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-dianhua"></use>
           </svg>
-          手机：15687678687
+          手机：{{ userInfo.phone }}
         </div>
         <div class="wechat">
           <svg class="icon iconSize" aria-hidden="true">
             <use xlink:href="#icon-weixin"></use>
           </svg>
-          微信：wechat4232dsa
+          微信：{{ userInfo.wechat }}
         </div>
       </div>
       <div class="set" @click="$router.push('/setMsg')">
@@ -30,7 +31,7 @@
         <use xlink:href="#icon-zhongjinshu"></use>
       </svg>
       <span>闲置币：</span>
-      <span>1231</span>
+      <span>{{ userInfo.spareMoney }}</span>
     </div>
     <!-- 操作 -->
     <div class="ctrl">
@@ -71,8 +72,30 @@
 </template>
 
 <script>
-export default {
+import requestApi from '@/request/request'
 
+export default {
+  data () {
+    return {
+      userInfo: ''
+    }
+  },
+
+  activated () {
+    this.getUserInfo()
+  },
+
+  methods: {
+    getUserInfo () {
+      const data = { userId: localStorage.getItem('userInfo') }
+      requestApi({
+        name: 'getUserInfo',
+        data
+      }).then(res => {
+        this.userInfo = res.data
+      })
+    }
+  }
 }
 </script>
 

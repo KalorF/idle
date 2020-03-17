@@ -28,6 +28,7 @@ const routes = [
   { path: '/pdynamic', name: 'pdynamic', component: () => import(/* webpackChunkName: "pdynamic" */ '../views/publish/pdynamic') },
   { path: '/pgoods', name: 'pgoods', component: () => import(/* webpackChunkName: "registry" */ '../views/publish/pgoods') },
   { path: '/sort', name: 'sort', component: () => import(/* webpackChunkName: "sort" */ '../views/sort') },
+  { path: '/modifyPwd', name: 'modifyPwd', component: () => import(/* webpackChunkName: "sort" */ '../views/mine/modifyPwd') },
   { path: '*', name: '404', component: () => import(/* webpackChunkName: "mine" */ '../views/404') }
 ]
 

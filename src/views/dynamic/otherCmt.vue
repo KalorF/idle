@@ -1,46 +1,48 @@
 <template>
   <PageTran>
     <div class="otherCmtPage">
-      <Back title="评论内容" @back="$router.go(-1)" />
+      <Back title="回复内容" @back="$router.go(-1)" />
       <!-- 内容 -->
       <div class="dynamicBox">
         <div class="dynamicItem">
           <div class="author">
-            <img class="headerPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
+            <img class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars === ''" src="@/assets/header.png" alt="">
+            <img class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars !== ''" :src="replyData.reviewer.avatars" alt="">
             <div class="otherMsg">
-              <span>作者1</span>
-              <div>01-03 12:00</div>
+              <span v-if="replyData.reviewer">{{ replyData.reviewer.username }}</span>
+              <div>{{ replyData.createTime | formatDate }}</div>
             </div>
           </div>
           <div class="content">
-            南方的是非得失你v呈现出小女人离开你是看vsee是愤怒的说是你的女生短发女生的康师傅
+            {{ replyData.content }}
           </div>
         </div>
       </div>
       <!-- 用户评论 -->
       <div class="userComments">
-        <div class="cmtHeader">
-          评论 · 123
+        <div class="cmtHeader" v-if="replyData.replies">
+          回复 · {{ replyData.replies.length }}
         </div>
-        <div class="cmtBox" v-for="i in 5" :key="i">
+        <div class="cmtBox" v-for="(item, index) in replyData.replies" :key="index">
           <div class="headerBox">
-            <img class="userPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
-            <div class="other">
-              <span>用户2</span>
-              <div>01-03 12:00</div>
+            <img class="userPic" v-if="item.replyer.avatars === ''" src="@/assets/header.png" alt="">
+            <img v-else class="userPic" :src="item.replyer.avatars" alt="">
+            <div class="other" @click="myreply(item)">
+              <span>{{ item.replyer.username }}</span>
+              <div>{{ item.createTime | formatDate}}</div>
             </div>
-            <div class="givelike">
+            <!-- <div class="givelike">
               <span>342</span>
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
-            </div>
+            </div> -->
           </div>
-          <div class="content">
-            发放第三方的是非得失
+          <div class="content" @click="myreply(item)">
+            {{ item.content }}
           </div>
-          <div class="viewCmt" @click="viewOther">
-            188条回复>
+          <div class="viewCmt" v-if="item.eotoes">
+            <span>作者回复：</span><span>{{ item.eotoes.content }}</span>
           </div>
         </div>
       </div>
@@ -52,9 +54,11 @@
           rows="1"
           autosize
           type="textarea"
-          placeholder="请输入你的评论"
+          :placeholder="placeholder"
+          ref="replyinput"
+          @blur="blur"
         />
-        <div class="pub">发送</div>
+        <div class="pub" @click="pubReply">发送</div>
       </div>
     </div>
   </PageTran>
@@ -63,17 +67,91 @@
 <script>
 import Back from '@/components/Back.vue'
 import PageTran from '@/components/PageTran.vue'
+import requestApi from '@/request/request'
+import { formatDate } from '@/common/date.js'
 
 export default {
   components: { Back, PageTran },
+
   data () {
     return {
-      message: ''
+      message: '',
+      replyData: {},
+      placeholder: '请输入你的回复',
+      authorReply: false,
+      replyToSb: '',
+      replyId: ''
     }
   },
+
+  filters: {
+    formatDate (time) {
+      var date = new Date(parseInt(time))
+      return formatDate(date, 'MM-dd hh:mm')
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
   methods: {
-    viewOther () {
-      this.$router.push({ name: 'otherCmt', query: { time: new Date().getTime() } })
+
+    blur () {
+      this.placeholder = '请输入你的回复'
+    },
+
+    myreply (item) {
+      if (this.replyData.reviewer._id === localStorage.getItem('userInfo')) {
+        this.placeholder = '回复' + item.replyer.username
+        this.authorReply = true
+        this.replyToSb = item.replyer._id
+        this.replyId = item._id
+        this.$refs.replyinput.focus()
+      }
+    },
+
+    pubReply () {
+      if (this.message === '') {
+        this.$toast('请输入你的评论')
+      } else {
+        this.replyApi()
+      }
+    },
+
+    replyApi () {
+      if (localStorage.getItem('userInfo') === this.replyData.reviewer._id && !this.authorReply) {
+        this.$toast('无法回复自己哦')
+        return
+      }
+      let data = { comment: this.$route.query.id, replyer: localStorage.getItem('userInfo'), replyToSb: this.replyData.reviewer._id, content: this.message }
+      if (this.authorReply) {
+        data.replyToSb = this.replyToSb
+        data.replyId = this.replyId
+        data.eotoes = { content: this.message, authorId: localStorage.getItem('userInfo') }
+        delete data.comment
+      }
+      requestApi({
+        name: 'addReply',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$refs.replyinput.blur()
+          this.message = ''
+          this.authorReply = false
+          this.$toast('回复成功')
+          this.getData()
+        }
+      })
+    },
+
+    getData () {
+      requestApi({
+        name: 'viewCommentReply',
+        data: { commentId: this.$route.query.id }
+      }).then(res => {
+        this.replyData = res.data
+      })
     }
   }
 }
@@ -139,7 +217,7 @@ export default {
     height: 40px;
     line-height: 40px;
     padding-left: 10px;
-    font-size: 17px;
+    font-size: 14px;
     border-bottom: 1px solid #f5f7fa;
   }
   .cmtBox {
@@ -183,8 +261,11 @@ export default {
       font-size: 12px;
       margin-top: 10px;
       color: #444444;
-      margin-left: 37px;
-      color:#34ace0;
+      margin-left: 42px;
+      span:nth-child(1) {
+        border-left: 2px solid #2ed573;
+        padding-left: 5px;
+      }
     }
   }
 }
