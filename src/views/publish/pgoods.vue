@@ -142,7 +142,7 @@ export default {
 
     publishApi () {
       let seller = localStorage.getItem('userInfo')
-      let city = window.returnCitySN.cname.slice(-3)
+      let city = window.city
       const data = { desc: this.content, price: this.price, typeName: this.typeVal, goodsPics: this.imgList, seller, city }
       requestApi({
         name: 'publishGoods',

@@ -7,15 +7,15 @@
         <use xlink:href="#icon-zhongjinshu"></use>
         </svg>
         <span>拥有闲置币：</span>
-        <span>1231</span>
+        <span>{{ spareMoney }}</span>
       </div>
       <div class="exchangeBox">
-        <div class="item" v-for="i in 10" :key="i">
-          <img src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
+        <div class="item" v-for="(item, index) in goodsList" :key="index">
+          <img :src="item.pics[0]" alt="">
           <div class="msgAndCtrl">
-            <div class="title">牛子的是非得失看到</div>
-            <div class="cost">345闲置币</div>
-            <button class="btn" @click="$router.push('/exchange')">兑换</button>
+            <div class="title">{{ item.title }}</div>
+            <div class="cost">{{ item.cost }}闲置币</div>
+            <button class="btn" @click="handleExchange(item)">兑换</button>
           </div>
         </div>
       </div>
@@ -26,8 +26,50 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+
 export default {
-  components: { PageTran, Back }
+  components: { PageTran, Back },
+
+  data () {
+    return {
+      goodsList: [],
+      spareMoney: 0
+    }
+  },
+
+  activated () {
+    this.getData()
+    this.getUserInfo()
+  },
+
+  methods: {
+    getData () {
+      requestApi({
+        name: 'getForgoods'
+      }).then(res => {
+        this.goodsList = res.data
+      })
+    },
+
+    handleExchange (item) {
+      if (this.spareMoney < item.cost) {
+        this.$toast('闲置币不足，无法兑换')
+      } else {
+        this.$router.push({ path: '/exchange', query: { id: item._id, cost: item.cost } })
+      }
+    },
+
+    getUserInfo () {
+      const data = { userId: localStorage.getItem('userInfo') }
+      requestApi({
+        name: 'getUserInfo',
+        data
+      }).then(res => {
+        this.spareMoney = res.data.spareMoney
+      })
+    }
+  }
 }
 </script>
 

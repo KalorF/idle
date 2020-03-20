@@ -85,7 +85,7 @@ export default {
     getData () {
       requestApi({
         name: 'getDynamicList',
-        data: { city: window.returnCitySN.cname.slice(-3) }
+        data: { city: window.city }
       }).then(res => {
         if (res.code === 200) {
           this.dynamicList = res.data

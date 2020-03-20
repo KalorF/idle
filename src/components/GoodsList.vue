@@ -29,12 +29,27 @@ export default {
   },
   methods: {
     getGoodsList () {
-      requestApi({
-        name: 'getHomeGoodsList',
-        data: { city: window.returnCitySN.cname.slice(-3) }
-      }).then(res => {
-        this.goodsList = res.data
-      })
+      let data = {}
+      if (window.city) {
+        data.city = window.city
+        requestApi({
+          name: 'getHomeGoodsList',
+          data
+        }).then(res => {
+          this.goodsList = res.data
+        })
+      } else {
+        // eslint-disable-next-line no-undef
+        new BMap.Geolocation().getCurrentPosition((r) => {
+          data.city = r.address.city
+          requestApi({
+            name: 'getHomeGoodsList',
+            data
+          }).then(res => {
+            this.goodsList = res.data
+          })
+        })
+      }
     }
   }
 }

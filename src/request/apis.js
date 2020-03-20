@@ -85,5 +85,25 @@ export default {
   modifyPwd: {
     url: '/user/modifyPwd',
     method: 'post'
+  },
+  getSearchList: {
+    url: '/goods/getSearchList',
+    method: 'get'
+  },
+  getGoodsListBykeyword: {
+    url: '/goods/getGoodsListBykeyword',
+    method: 'get'
+  },
+  getForgoods: {
+    url: '/forgoods/getForgoods',
+    method: 'get'
+  },
+  addForgoosOrder: {
+    url: '/forgoodsorder/addForgoosOrder',
+    method: 'post'
+  },
+  viewMyDym: {
+    url: '/dynamic/viewMyDym',
+    method: 'get'
   }
 }

@@ -9,14 +9,15 @@
         <div class="sortItem" @click="change(item, index)" :class="{active: activeIndex === index}" v-for="(item, index) in sortList" :key="index">{{ item }}</div>
       </div>
       <div class="goodsBox">
-        <div class="goodsItem" v-for="i in 10" :key="i" @click="$router.push('/goodsDetail')">
-          <img class="goodsPic" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
+        <div class="goodsItem" v-for="(item, index) in goodsList" :key="index" @click="$router.push({ path: '/goodsDetail', query: {id: item._id} })">
+          <img class="goodsPic" :src="item.goodsPics[0]" alt="">
           <div class="goodsMsg">
-            <div class="title">牛子上衣</div>
-            <div class="price"><span>¥</span><span>123</span></div>
+            <div class="title">{{ item.desc }}</div>
+            <div class="price"><span>¥</span><span>{{ item.price }}</span></div>
             <div class="publishUser">
-              <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="发布者">
-              <span>发布者1</span>
+              <img v-if="item.seller.avatars === ''" src="@/assets/header.png" alt="">
+              <img v-else :src="item.seller.avatars" alt="发布者">
+              <span>{{ item.seller.username }}</span>
             </div>
           </div>
         </div>
@@ -27,17 +28,49 @@
 
 <script>
 import PageTran from '@/components/PageTran.vue'
+import requestApi from '@/request/request'
+
 export default {
   components: { PageTran },
   data () {
     return {
       sortList: ['最新发布', '价格高到低', '价格低到高'],
-      activeIndex: 0
+      activeIndex: 0,
+      goodsList: []
     }
   },
+
+  activated () {
+    this.getData()
+  },
+
+  beforeRouteLeave (to, from, next) {
+    this.$destroy()
+    next()
+  },
+
   methods: {
     change (item, index) {
       this.activeIndex = index
+      if (item === '最新发布') {
+        this.getData()
+      } else if (item === '价格高到低') {
+        let data = JSON.parse(JSON.stringify(this.goodsList))
+        this.goodsList = data.sort((a, b) => { return b.price - a.price })
+      } else if (item === '价格低到高') {
+        let data = JSON.parse(JSON.stringify(this.goodsList))
+        this.goodsList = data.sort((a, b) => { return a.price - b.price })
+      }
+    },
+
+    getData () {
+      const data = { city: window.city, keyword: this.$route.query.keyword }
+      requestApi({
+        name: 'getGoodsListBykeyword',
+        data
+      }).then(res => {
+        this.goodsList = res.data
+      })
     }
   }
 }

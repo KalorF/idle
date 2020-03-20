@@ -26,7 +26,7 @@
           />
       </div>
       <div class="ctrl">
-        <button class="btn">确认兑换</button>
+        <button class="btn" @click="handleExchange">确认兑换</button>
       </div>
     </div>
   </PageTran>
@@ -35,6 +35,8 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+
 export default {
   components: { PageTran, Back },
   data () {
@@ -42,6 +44,47 @@ export default {
       name: '',
       phone: '',
       address: ''
+    }
+  },
+
+  beforeRouteLeave (to, from, next) {
+    this.$destroy()
+    next()
+  },
+
+  methods: {
+    handleExchange () {
+      if (this.name === '') {
+        this.$toast('请输入收货人姓名')
+      } else if (this.phone === '') {
+        this.$toast('请输入手机号码')
+      } else if (this.address === '') {
+        this.$toast('请输入收获地址')
+      } else {
+        this.exchangeApi()
+      }
+    },
+
+    exchangeApi () {
+      const data = {
+        forgoodsId: this.$route.query.id,
+        cost: this.$route.query.cost,
+        userId: localStorage.getItem('userInfo'),
+        phone: this.phone,
+        goodsAre: this.name,
+        address: this.address
+      }
+      requestApi({
+        name: 'addForgoosOrder',
+        data
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast('兑换成功，平台马上会送到你手上哦～')
+          setTimeout(() => {
+            this.$router.replace('/exchangeGoods')
+          }, 500)
+        }
+      })
     }
   }
 }

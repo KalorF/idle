@@ -82,7 +82,8 @@ export default {
         data
       }).then(res => {
         if (res.code === 200) {
-          this.$toast('购买成功')
+          this.$toast('购买成功, 尽快与商家取得联系吧!')
+          this.$router.replace('/myBuyGoods')
           this.isShowContact = true
         }
       })

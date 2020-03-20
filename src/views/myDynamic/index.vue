@@ -3,32 +3,30 @@
     <div class="myDynamicPage">
       <Back title="我的动态" @back="$router.go(-1)" />
       <div class="dynamicBox">
-        <div class="dynamicItem" v-for="i in 10" :key="i">
+        <div class="dynamicItem" v-for="(item, index) in dymsData" :key="index">
           <div class="author">
-            <!-- <img class="headerPic" src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt=""> -->
             <div class="otherMsg">
-              <!-- <span>作者1</span> -->
-              <div>01-03 12:00</div>
+              <div>{{ item.creteTime | formatDate }}</div>
             </div>
           </div>
           <div class="content">
-            南方的是非得失你v呈现出小女人离开你是看vsee是愤怒的说是你的女生短发女生的康师傅
+            {{ item.content }}
           </div>
           <div class="imgContent">
-            <div v-for="i in 5" :key="i" class="imgItem" :style="{backgroundImage: 'url(' + 'http://img0.imgtn.bdimg.com/it/u=492040588,2039661122&fm=26&gp=0.jpg' + ')'}"></div>
+            <div v-for="(ite, index) in item.pics" :key="index" class="imgItem" :style="{backgroundImage: 'url(' + ite + ')'}"></div>
           </div>
           <div class="ctrl">
-            <div class="comments" @click="$router.push('/comments')">
+            <div class="comments" @click="$router.push({ path: '/comments', query: { id: item._id } })">
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-duihua"></use>
               </svg>
-              <span>356</span>
+              <span>{{ item.commentNub }}</span>
             </div>
-            <div class="giveLike">
+            <div class="giveLike" @click="$router.push({ path: '/comments', query: { id: item._id } })">
               <svg class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
-              <span>7098</span>
+              <span>{{ item.likeNum }}</span>
             </div>
           </div>
         </div>
@@ -40,8 +38,39 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+import { formatDate } from '@/common/date.js'
+
 export default {
-  components: { PageTran, Back }
+  components: { PageTran, Back },
+
+  data () {
+    return {
+      dymsData: []
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  filters: {
+    formatDate (time) {
+      var date = new Date(parseInt(time))
+      return formatDate(date, 'MM-dd hh:mm')
+    }
+  },
+
+  methods: {
+    getData () {
+      requestApi({
+        name: 'viewMyDym',
+        data: { userId: localStorage.getItem('userInfo') }
+      }).then(res => {
+        this.dymsData = res.data
+      })
+    }
+  }
 }
 </script>
 

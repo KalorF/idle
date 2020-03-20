@@ -3,26 +3,29 @@
     <div class="searchPage">
       <div class="searchHeader">
         <img @click="$router.go(-1)" class="back" src="@/assets/back.png" alt="返回">
-        <input v-model="keyword" class="searchInput" type="text" placeholder="输入要搜索的商品">
+        <input v-model="keyword" @input="handleInput" class="searchInput" type="text" placeholder="输入要搜索的商品">
         <span class="searchBtn" @click="search">搜索</span>
       </div>
       <div class="resultBox">
-        <div class="resultItem" @click="$router.push('/goodsList')" v-for="(item, index) in resultList" :key="index" v-html="item.name"></div>
+        <div class="resultItem" @click="$router.push({path: '/goodsList', query: { keyword: item.text }})" v-for="(item, index) in resultList" :key="index" v-html="item.name"></div>
       </div>
-      <h2 v-if="isShowTip">没有搜索到匹配结果</h2>
+      <div class="noresult" v-if="isShowTip">没有搜索到对应的商品</div>
     </div>
   </PageTran>
 </template>
 
 <script>
 import PageTran from '@/components/PageTran.vue'
+import requestApi from '@/request/request'
+
 export default {
   components: { PageTran },
   data () {
     return {
       resultList: [],
       isShowTip: false,
-      keyword: ''
+      keyword: '',
+      timer: 0
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -32,9 +35,53 @@ export default {
   methods: {
     search () {
       this.isShowTip = false
-      this.resultList = [{ name: '衣服1' }, { name: '衣服2' }, { name: '裤子' }]
-      this.resultList.map((item) => {
-        item.name = this.brightKeyword(item.name)
+      this.getResultApi(this.keyword)
+    },
+
+    handleInput () {
+      // let self = this
+      if (this.keyword !== '') {
+        this.debounce(() => {
+          this.getResultApi(this.keyword)
+        }, 500)()
+      } else {
+        this.resultList = []
+      }
+      this.isShowTip = false
+    },
+
+    debounce (func, wait) {
+      var _this = this
+      return function (...args) {
+        if (_this.timer) clearTimeout(_this.timer)
+        // console.log('77')
+        _this.timer = setTimeout(() => {
+          func.apply(_this, args)
+        }, wait)
+      }
+    },
+
+    getResultApi (keyword) {
+      const data = { keyword, city: window.city }
+      requestApi({
+        name: 'getSearchList',
+        data
+      }).then(res => {
+        let data = JSON.parse(JSON.stringify(res.data))
+        let newdata = []
+        data.forEach(item => {
+          newdata.push({ name: item, text: item })
+        })
+        for (let i = 0; i < newdata.length; i++) {
+          newdata[i].name = this.brightKeyword(newdata[i].name)
+        }
+        this.resultList = newdata
+        if (res.data.length === 0) {
+          this.isShowTip = true
+          if (this.keyword === '') {
+            this.isShowTip = false
+          }
+        }
       })
     },
 
@@ -65,6 +112,10 @@ export default {
 .searchPage::-webkit-scrollbar {
   width: 0px;
   display: none;
+}
+.noresult {
+  text-align: center;
+  color: #666666;
 }
 .searchHeader {
   display: flex;

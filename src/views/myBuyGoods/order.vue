@@ -67,7 +67,7 @@ export default {
     confirmApi (id) {
       requestApi({
         name: 'confirmGoods',
-        data: { OrderId: id }
+        data: { OrderId: id, userId: localStorage.getItem('userInfo') }
       }).then(res => {
         if (res.code === 200) {
           this.$toast.success('成功确认收货')

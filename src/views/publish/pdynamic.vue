@@ -85,7 +85,7 @@ export default {
       }
     },
     pubApi () {
-      let data = { publisher: localStorage.getItem('userInfo'), pics: this.imgList, content: this.content, city: window.returnCitySN.cname.slice(-3) }
+      let data = { publisher: localStorage.getItem('userInfo'), pics: this.imgList, content: this.content, city: window.city }
       requestApi({
         name: 'publishDynamic',
         data
