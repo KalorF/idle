@@ -12,9 +12,9 @@
               <span v-if="cmtData.publisher">{{ cmtData.publisher.username }}</span>
               <div>{{ cmtData.creteTime | formatDate }}</div>
             </div>
-            <div class="givelike">
+            <div class="givelike" @click="givelike">
               <span>{{ cmtData.likeNum }}</span>
-              <svg class="icon iconSize" aria-hidden="true">
+              <svg ref="likeIcon" class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
             </div>
@@ -48,9 +48,9 @@
               <span>{{ item.reviewer._id === cmtData.publisher._id ? item.reviewer.username + '（作者）' :  item.reviewer.username }}</span>
               <div>{{ item.createTime | formatDate }}</div>
             </div>
-            <div class="givelike">
+            <div class="givelike" @click="giveLikeToCmt(item, index)">
               <span>{{ item.linkeNum }}</span>
-              <svg class="icon iconSize" aria-hidden="true">
+              <svg ref="likeIconCmt" class="icon iconSize" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
             </div>
@@ -118,6 +118,30 @@ export default {
         images: imgs,
         startPosition: index
       })
+    },
+
+    givelike () {
+      this.cmtData.likeNum++
+      this.$refs.likeIcon.classList.add('active')
+      setTimeout(() => {
+        this.$refs.likeIcon.classList.remove('active')
+      }, 500)
+      requestApi({
+        name: 'givelikeTodym',
+        data: { id: this.cmtData._id, status: 1 }
+      }).then(res => { console.log('成功') })
+    },
+
+    giveLikeToCmt (item, index) {
+      this.cmtData.comments[index].linkeNum++
+      this.$refs.likeIconCmt[index].classList.add('active')
+      setTimeout(() => {
+        this.$refs.likeIconCmt[index].classList.remove('active')
+      }, 500)
+      requestApi({
+        name: 'giveLike',
+        data: { commentId: item._id, status: 1 }
+      }).then(res => { console.log('成功') })
     },
 
     // 发表评论
@@ -242,6 +266,12 @@ export default {
           color: #555555;
           margin-right: 5px;
         }
+        .icon {
+          transition: all .3s;
+        }
+        .active {
+          font-size: 20px;
+        }
       }
     }
     .content {
@@ -302,6 +332,12 @@ export default {
           font-size: 13px;
           color: #555555;
           margin-right: 5px;
+        }
+        .icon {
+          transition: all .3s;
+        }
+        .active {
+          font-size: 20px;
         }
       }
     }

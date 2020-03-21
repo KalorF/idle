@@ -36,7 +36,7 @@
       <div class="ctrl">
         <button class="btn" @click="loginOut">退出登陆</button>
       </div>
-      <van-dialog v-model="showDialog" :title="dialogTitle" @confirm="handleConfirm" @cancel="dialogVal = '', this.dialogTitle = ''" confirmButtonText="确认修改" cancelButtonText="取消修改" show-cancel-button>
+      <van-dialog v-model="showDialog" :title="dialogTitle" @confirm="handleConfirm" @cancel="dialogVal = '', dialogTitle = ''" confirmButtonText="确认修改" cancelButtonText="取消修改" show-cancel-button>
         <van-field v-model="dialogVal" placeholder="请输入修改内容" :label="lable" />
       </van-dialog>
     </div>

@@ -105,5 +105,17 @@ export default {
   viewMyDym: {
     url: '/dynamic/viewMyDym',
     method: 'get'
+  },
+  getoodsByOneType: {
+    url: '/goods/getoodsByOneType',
+    method: 'get'
+  },
+  givelikeTodym: {
+    url: '/dynamic/givelikeTodym',
+    method: 'post'
+  },
+  giveLike: {
+    url: '/comment/giveLike',
+    method: 'post'
   }
 }

@@ -3,19 +3,19 @@
     <HomeHeader />
     <!-- 一级选项 -->
     <div class="selBar">
-      <div class="barItem" @click="$router.push('/goodsList')">
+      <div class="barItem" @click="$router.push({path: '/goodsList', query: { name: '手机' }})">
         <img src="@/assets/phone.png">
         <div>手机</div>
       </div>
-      <div class="barItem">
+      <div class="barItem" @click="$router.push({path: '/goodsList', query: { name: '电脑' }})">
         <img src="@/assets/cmp.png">
         <div>电脑</div>
       </div>
-      <div class="barItem">
+      <div class="barItem" @click="$router.push({path: '/goodsList', query: { name: '图书' }})">
         <img src="@/assets/book.png">
         <div>图书</div>
       </div>
-      <div class="barItem">
+      <div class="barItem" @click="$router.push({path: '/goodsList', query: { name: '服装' }})">
         <img src="@/assets/clothes.png">
         <div>服装</div>
       </div>

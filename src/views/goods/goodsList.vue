@@ -21,6 +21,9 @@
             </div>
           </div>
         </div>
+        <div class="nodata" v-if="!goodsList.length">
+          无相关商品
+        </div>
       </div>
     </div>
   </PageTran>
@@ -40,8 +43,18 @@ export default {
     }
   },
 
+  beforeRouteEnter (to, from, next) {
+    const fromRouter = from.name
+    next(vm => {
+      if (fromRouter === 'index') {
+        vm.getOneData()
+      } else {
+        vm.getData()
+      }
+    })
+  },
+
   activated () {
-    this.getData()
   },
 
   beforeRouteLeave (to, from, next) {
@@ -53,7 +66,7 @@ export default {
     change (item, index) {
       this.activeIndex = index
       if (item === '最新发布') {
-        this.getData()
+        this.$route.query.keyword ? this.getData() : this.getOneData()
       } else if (item === '价格高到低') {
         let data = JSON.parse(JSON.stringify(this.goodsList))
         this.goodsList = data.sort((a, b) => { return b.price - a.price })
@@ -61,6 +74,16 @@ export default {
         let data = JSON.parse(JSON.stringify(this.goodsList))
         this.goodsList = data.sort((a, b) => { return a.price - b.price })
       }
+    },
+
+    getOneData () {
+      const data = { city: window.city, name: this.$route.query.name }
+      requestApi({
+        name: 'getoodsByOneType',
+        data
+      }).then(res => {
+        this.goodsList = res.data
+      })
     },
 
     getData () {
@@ -136,6 +159,11 @@ export default {
 .goodsBox {
   position: relative;
   margin-top: 97px;
+  .nodata {
+    text-align: center;
+    color: #777777;
+    padding-top: 10px;
+  }
   .goodsItem {
     height: 140px;
     background: #feffff;

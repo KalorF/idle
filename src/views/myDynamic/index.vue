@@ -13,7 +13,12 @@
             {{ item.content }}
           </div>
           <div class="imgContent">
-            <div v-for="(ite, index) in item.pics" :key="index" class="imgItem" :style="{backgroundImage: 'url(' + ite + ')'}"></div>
+            <div
+              v-for="(ite, index) in item.pics"
+              :key="index" class="imgItem"
+              :style="{backgroundImage: 'url(' + ite + ')'}"
+              @click="viewImgs(item.pics, index)"
+            ></div>
           </div>
           <div class="ctrl">
             <div class="comments" @click="$router.push({ path: '/comments', query: { id: item._id } })">
@@ -40,6 +45,7 @@ import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
 import requestApi from '@/request/request'
 import { formatDate } from '@/common/date.js'
+import { ImagePreview } from 'vant'
 
 export default {
   components: { PageTran, Back },
@@ -62,6 +68,13 @@ export default {
   },
 
   methods: {
+    viewImgs (imgs, index) {
+      ImagePreview({
+        images: imgs,
+        startPosition: index
+      })
+    },
+
     getData () {
       requestApi({
         name: 'viewMyDym',
@@ -92,7 +105,7 @@ export default {
 }
 .dynamicBox {
   position: relative;
-  margin-top: 50px;
+  margin-top: 55px;
   .dynamicItem {
     position: relative;
     padding: 10px 15px 6px;

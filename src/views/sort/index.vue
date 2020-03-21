@@ -13,7 +13,11 @@
           >{{ key }}</div>
         </div>
         <div class="right">
-          <div class="rightItem" v-for="(item, index) in typeList[activeKey]" :key="index">
+          <div class="rightItem"
+            v-for="(item, index) in typeList[activeKey]"
+            :key="index"
+            @click="$router.push({ path: '/goodslist', query: { keyword: item.name } })"
+          >
             <img :src="item.pic" alt="">
             <span>{{item.name}}</span>
           </div>
@@ -64,7 +68,6 @@ export default {
       })
       this.typeList = newdata
       this.activeKey = Object.keys(this.typeList)[0]
-      console.log(this.typeList[this.activeKey])
     }
   }
 }
