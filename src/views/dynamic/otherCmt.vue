@@ -129,7 +129,6 @@ export default {
         data.replyToSb = this.replyToSb
         data.replyId = this.replyId
         data.eotoes = { content: this.message, authorId: localStorage.getItem('userInfo') }
-        delete data.comment
       }
       requestApi({
         name: 'addReply',
