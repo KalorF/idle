@@ -117,5 +117,29 @@ export default {
   giveLike: {
     url: '/comment/giveLike',
     method: 'post'
+  },
+  getMsgData: {
+    url: '/message/getMsgData',
+    method: 'get'
+  },
+  viewGoodsById: {
+    url: '/goods/viewGoodsById',
+    method: 'get'
+  },
+  viewMsgData: {
+    url: '/message/viewMsgData',
+    method: 'post'
+  },
+  delMsg: {
+    url: '/message/delMsg',
+    method: 'post'
+  },
+  delGoods: {
+    url: '/goods/delGoods',
+    method: 'post'
+  },
+  getGoodsAndDy: {
+    url: '/user/getGoodsAndDy',
+    method: 'post'
   }
 }

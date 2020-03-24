@@ -106,6 +106,7 @@ export default {
         img {
           width: 20px;
           height: 20px;
+          border-radius: 50%;
         }
         span {
           margin-left: 5px;

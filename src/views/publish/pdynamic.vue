@@ -94,7 +94,7 @@ export default {
           this.$toast('发表成功')
           setTimeout(() => {
             this.$router.replace('/dynamic')
-          }, 1000)
+          }, 500)
         }
       })
     },

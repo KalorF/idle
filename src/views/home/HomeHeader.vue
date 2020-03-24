@@ -94,7 +94,7 @@ export default {
     background: #bbbbbb;
     // border: 1px solid #bbbbbb;
     margin-top: 10px;
-    box-shadow: 0px 0px 4px #dddddd;
+    box-shadow: 0px 0px 2px #feffff;
     text-align: center;
     line-height: 40px;
     .iconSize {

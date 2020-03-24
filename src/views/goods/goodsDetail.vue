@@ -5,8 +5,8 @@
       <div class="detailContent">
         <!-- 发布者信息 -->
         <div class="puberMsg">
-          <!-- <img v-if="goodsData.seller && goodsData.seller.avatars" :src="goodsData.seller.avatars" alt=""> -->
-          <img src="@/assets/header.png">
+          <img v-if="goodsData.seller && goodsData.seller.avatars !== ''" :src="goodsData.seller.avatars" alt="">
+          <img v-if="goodsData.seller && goodsData.seller.avatars === ''" src="@/assets/header.png">
           <div class="other">
             <span v-if="goodsData.seller">{{ goodsData.seller.username }}</span>
             <div>发布时间：{{ goodsData.createTime | formatDate }}</div>
@@ -54,7 +54,7 @@ export default {
   filters: {
     formatDate (time) {
       var date = new Date(parseInt(time))
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
+      return formatDate(date, 'MM-dd hh:mm')
     }
   },
 

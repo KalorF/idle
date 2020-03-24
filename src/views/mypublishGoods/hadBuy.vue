@@ -15,9 +15,9 @@
         <div class="buyerbox">
           <div class="buyerItem">
             <div class="state">购买者</div>
-            <img v-if="item.buyer.avatars === ''" src="@/assets/header.png" alt="">
-            <img v-else :src="item.buyer.avatars" alt="">
-            <div class="buyer">{{ item.buyer.username }}</div>
+            <img @click="$router.push({path:'/userMsg', query: { id: item.buyer._id }})" v-if="item.buyer.avatars === ''" src="@/assets/header.png" alt="">
+            <img @click="$router.push({path:'/userMsg', query: { id: item.buyer._id }})" v-else :src="item.buyer.avatars" alt="">
+            <div @click="$router.push({path:'/userMsg', query: { id: item.buyer._id }})" class="buyer">{{ item.buyer.username }}</div>
           </div>
         </div>
       </div>

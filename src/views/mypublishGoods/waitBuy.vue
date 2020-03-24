@@ -14,15 +14,15 @@
         </div>
         <div class="buyerbox">
           <div class="buyerItem" v-for="(ite, index) in item.buyers" :key="index">
-            <img v-if="ite.buyer.avatars !== ''" :src="ite.buyer.avatars" alt="">
-            <img v-else src="@/assets/header.png" alt="">
-            <div class="buyer">{{ ite.buyer.username }}</div>
+            <img @click="$router.push({path:'/userMsg', query: { id: ite.buyer._id }})" v-if="ite.buyer.avatars !== ''" :src="ite.buyer.avatars" alt="">
+            <img @click="$router.push({path:'/userMsg', query: { id: ite.buyer._id }})" v-else src="@/assets/header.png" alt="">
+            <div @click="$router.push({path:'/userMsg', query: { id: ite.buyer._id }})" class="buyer">{{ ite.buyer.username }}</div>
             <div class="state">待沟通</div>
             <button class="btn" @click="sellto(item._id, ite.buyer._id, ite.buyer.username)" >卖给</button>
           </div>
         </div>
         <div class="delctrl">
-          <button class="btn">取消发布</button>
+          <button class="btn" @click="handleDel(item)">取消商品</button>
         </div>
       </div>
     </div>
@@ -64,6 +64,21 @@ export default {
       }).then(res => {
         this.goodsList = res.data
       })
+    },
+
+    handleDel (item) {
+      if (item.buyers.length) {
+        this.$toast('已有购买者，无法删除商品哦')
+      } else {
+        requestApi({
+          name: 'delGoods',
+          data: { id: item._id }
+        }).then(res => {
+          if (res.code === 200) {
+            this.$toast('删除成功')
+          }
+        })
+      }
     },
 
     sellto (goodsId, buyer, name) {

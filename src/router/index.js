@@ -29,6 +29,7 @@ const routes = [
   { path: '/pgoods', name: 'pgoods', component: () => import(/* webpackChunkName: "registry" */ '../views/publish/pgoods') },
   { path: '/sort', name: 'sort', component: () => import(/* webpackChunkName: "sort" */ '../views/sort') },
   { path: '/modifyPwd', name: 'modifyPwd', component: () => import(/* webpackChunkName: "sort" */ '../views/mine/modifyPwd') },
+  { path: '/userMsg', name: 'userMsg', component: () => import(/* webpackChunkName: "sort" */ '../views/user') },
   { path: '*', name: '404', component: () => import(/* webpackChunkName: "mine" */ '../views/404') }
 ]
 

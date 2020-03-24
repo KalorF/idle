@@ -6,8 +6,8 @@
       <div class="dynamicBox">
         <div class="dynamicItem">
           <div class="author">
-            <img class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars === ''" src="@/assets/header.png" alt="">
-            <img class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars !== ''" :src="replyData.reviewer.avatars" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: replyData.reviewer._id}})" class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars === ''" src="@/assets/header.png" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: replyData.reviewer._id}})" class="headerPic" v-if="replyData.reviewer && replyData.reviewer.avatars !== ''" :src="replyData.reviewer.avatars" alt="">
             <div class="otherMsg">
               <span v-if="replyData.reviewer">{{ replyData.reviewer.username }}</span>
               <div>{{ replyData.createTime | formatDate }}</div>
@@ -25,8 +25,8 @@
         </div>
         <div class="cmtBox" v-for="(item, index) in replyData.replies" :key="index">
           <div class="headerBox">
-            <img class="userPic" v-if="item.replyer.avatars === ''" src="@/assets/header.png" alt="">
-            <img v-else class="userPic" :src="item.replyer.avatars" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: item.replyer._id}})" class="userPic" v-if="item.replyer.avatars === ''" src="@/assets/header.png" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: item.replyer._id}})" v-else class="userPic" :src="item.replyer.avatars" alt="">
             <div class="other" @click="myreply(item)">
               <span>{{ item.replyer.username }}</span>
               <div>{{ item.createTime | formatDate}}</div>
@@ -42,7 +42,8 @@
             {{ item.content }}
           </div>
           <div class="viewCmt" v-if="item.eotoes">
-            <span>作者回复：</span><span>{{ item.eotoes.content }}</span>
+            <span class="sp">{{ replyData.reviewer.username }}<span>@{{ item.replyer.username }}</span>：</span>
+            <span>{{ item.eotoes.content }}</span>
           </div>
         </div>
       </div>
@@ -96,7 +97,6 @@ export default {
   },
 
   methods: {
-
     blur () {
       this.placeholder = '请输入你的回复'
     },
@@ -261,9 +261,12 @@ export default {
       margin-top: 10px;
       color: #444444;
       margin-left: 42px;
-      span:nth-child(1) {
+      .sp {
         border-left: 2px solid #2ed573;
         padding-left: 5px;
+        span {
+          color: #34ace0;
+        }
       }
     }
   }

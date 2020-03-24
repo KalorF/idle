@@ -86,6 +86,7 @@ export default {
   width: 100%;
   // border-top-left-radius: 20px;
   // border-top-right-radius: 20px;
+  border-top: 1px solid #f1f2f6;
   display: flex;
   justify-content: space-around;
   .footerItem {

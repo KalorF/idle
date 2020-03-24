@@ -6,18 +6,19 @@
         <div class="goodsItem">
           <div class="goodsMsg">
             <div class="titleAndprice">
-              <p class="p1">加热发多少</p>
-              <p class="p2"><span>¥</span><span>345</span></p>
+              <p class="p1">{{ goodsData.desc }}</p>
+              <p class="p2"><span>¥</span><span>{{ goodsData.price }}</span></p>
             </div>
             <div class="imgbox">
-              <img src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2978542106,579749062&fm=26&gp=0.jpg" alt="">
-              <div class="number">6张</div>
+              <img v-if="goodsData.goodsPics" @click="viewImgs(goodsData.goodsPics, 0)" :src="goodsData.goodsPics[0]" alt="">
+              <div v-if="goodsData.goodsPics" class="number">{{ goodsData.goodsPics.length }}张</div>
             </div>
           </div>
           <div class="buyerbox">
-            <div class="buyerItem" v-for="i in 2" :key="i">
-              <img src="http://img2.imgtn.bdimg.com/it/u=1918146356,491392782&fm=11&gp=0.jpg" alt="">
-              <div class="buyer">购买者1</div>
+            <div class="buyerItem" v-for="(item, index) in goodsData.buyers" :key="index">
+              <img v-if="item.buyer.avatars === ''" src="@/assets/header.png" alt="">
+              <img v-else :src="item.buyer.avatars" alt="">
+              <div class="buyer">{{ item.buyer.username }}</div>
               <div class="state">待沟通</div>
             </div>
           </div>
@@ -30,8 +31,38 @@
 <script>
 import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
+import requestApi from '@/request/request'
+import { ImagePreview } from 'vant'
+
 export default {
-  components: { PageTran, Back }
+  components: { PageTran, Back },
+
+  data () {
+    return {
+      goodsData: {}
+    }
+  },
+
+  activated () {
+    this.getData()
+  },
+
+  methods: {
+    viewImgs (imgs, index) {
+      ImagePreview({
+        images: imgs,
+        startPosition: index
+      })
+    },
+    getData () {
+      requestApi({
+        name: 'viewGoodsById',
+        data: { id: this.$route.query.id }
+      }).then(res => {
+        this.goodsData = res.data
+      })
+    }
+  }
 }
 </script>
 

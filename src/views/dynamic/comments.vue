@@ -6,10 +6,10 @@
       <div class="dynamicBox">
         <div class="dynamicItem">
           <div class="author">
-            <img class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars === ''" src="@/assets/header.png" alt="">
-            <img class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars !== ''" :src="cmtData.publisher.avatars" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: cmtData.publisher._id}})" class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars === ''" src="@/assets/header.png" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: cmtData.publisher._id}})" class="headerPic" v-if="cmtData.publisher && cmtData.publisher.avatars !== ''" :src="cmtData.publisher.avatars" alt="">
             <div class="otherMsg">
-              <span v-if="cmtData.publisher">{{ cmtData.publisher.username }}</span>
+              <span @click="$router.push({path: '/userMsg', query: {id: cmtData.publisher._id}})" v-if="cmtData.publisher">{{ cmtData.publisher.username }}</span>
               <div>{{ cmtData.creteTime | formatDate }}</div>
             </div>
             <div class="givelike" @click="givelike">
@@ -42,8 +42,8 @@
         </div>
         <div class="cmtBox" v-for="(item, index) in (cmtData.comments)" :key="index">
           <div class="headerBox">
-            <img class="userPic" v-if="item.reviewer.avatars === ''" src="@/assets/header.png" alt="">
-            <img v-else class="userPic" :src="item.reviewer.avatars" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: item.reviewer._id}})" class="userPic" v-if="item.reviewer.avatars === ''" src="@/assets/header.png" alt="">
+            <img @click="$router.push({path: '/userMsg', query: {id: item.reviewer._id}})" v-else class="userPic" :src="item.reviewer.avatars" alt="">
             <div class="other" @click="toReplay(item)">
               <span>{{ item.reviewer._id === cmtData.publisher._id ? item.reviewer.username + '（作者）' :  item.reviewer.username }}</span>
               <div>{{ item.createTime | formatDate }}</div>

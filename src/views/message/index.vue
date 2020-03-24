@@ -6,18 +6,23 @@
     </div>
     <goodsMsg v-if="activeIndex === 0" />
     <dynamicMsg v-if="activeIndex === 1" />
+    <comment v-if="activeIndex === 2" />
+    <eato v-if="activeIndex === 3" />
   </div>
 </template>
 
 <script>
 import goodsMsg from './goodsMsg'
 import dynamicMsg from './dynamicMsg'
+import comment from './comment'
+import eato from './eato'
+
 export default {
-  components: { goodsMsg, dynamicMsg },
+  components: { goodsMsg, dynamicMsg, comment, eato },
   data () {
     return {
       activeIndex: 0,
-      tabList: [{ type: 1, text: '闲置消息' }, { type: 2, text: '动态消息' }]
+      tabList: [{ type: 0, text: '闲置' }, { type: 1, text: '动态' }, { type: 2, text: '回复' }, { type: 3, text: '@我' }]
     }
   },
   methods: {

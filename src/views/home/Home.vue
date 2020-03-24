@@ -25,10 +25,10 @@
       </div>
     </div>
     <!-- 二级选项 -->
-    <div class="secondBar">
+    <!-- <div class="secondBar">
       <div class="one"></div>
       <div class="two"></div>
-    </div>
+    </div> -->
     <!-- 商品列表 -->
     <GoodsList class="homeGoods" />
   </div>
@@ -62,14 +62,16 @@ export default {
   display: none;
 }
 .selBar {
-  height: 80px;
-  // background: #ffffff;
+  height: 94px;
+  background: #ffffff;
+  border-radius: 10px;
   position: relative;
-  top: 88px;
+  top: 98px;
   display: flex;
   width: 94%;
   margin-left: 3%;
   justify-content: space-around;
+  flex-wrap: wrap;
   .barItem {
     position: relative;
     display: flex;
@@ -106,6 +108,6 @@ export default {
   }
 }
 .homeGoods {
-  margin-top: 13px;
+  margin-top: 110px;
 }
 </style>
