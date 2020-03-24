@@ -59,7 +59,7 @@ export default {
       const file = e.target.files[0]
       let forms = new FormData()
       forms.append('file', file)
-      axios.post(`${process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_BASE_API}/user/uploadPics`, forms, {
+      axios.post(`${process.env.VUE_APP_BASE_API}/user/uploadPics`, forms, {
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(res => {
         this.imgList.push(res.data.data.url)

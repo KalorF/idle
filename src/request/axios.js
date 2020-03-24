@@ -1,7 +1,7 @@
 import axios from 'axios'
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_BASE_API, // api 的 BASE_API
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 BASE_API
   timeout: 30000 // 请求超时时间
 })
 

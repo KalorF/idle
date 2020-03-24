@@ -46,7 +46,8 @@ export default {
   methods: {
     getData () {
       requestApi({
-        name: 'getForgoods'
+        name: 'getForgoods',
+        data: { status: '1' }
       }).then(res => {
         this.goodsList = res.data
       })
