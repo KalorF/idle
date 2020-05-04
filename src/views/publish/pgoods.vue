@@ -42,6 +42,7 @@
         <van-picker
           show-toolbar
           :columns="columns"
+          @change="onChange"
           @cancel="showPicker = false"
           @confirm="onConfirm"
         />
@@ -123,6 +124,10 @@ export default {
         className: 'column2'
       }]
       this.showPicker = true
+    },
+
+    onChange (picker, values) {
+      picker.setColumnValues(1, this.typeList[values[0]])
     },
 
     // 发布商品

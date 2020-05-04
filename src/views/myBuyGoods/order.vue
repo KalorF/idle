@@ -36,6 +36,7 @@
           <div v-if="status === 2">状态：已收货</div>
           <div v-if="status === -1">状态：已被购买</div>
           <button v-if="status === 1" @click="confirm(item._id)" class="btn2">确认收货</button>
+          <button v-if="status === 0" @click="del(item._id)" class="btn3">删除订单</button>
         </div>
       </div>
     </div>
@@ -61,6 +62,28 @@ export default {
       }).then(() => {
         this.confirmApi(id)
       }).catch(() => {
+      })
+    },
+
+    del (id) {
+      Dialog.confirm({
+        title: '提示',
+        message: '是否确认删除订单？'
+      }).then(() => {
+        this.delApi(id)
+      }).catch(() => {
+      })
+    },
+
+    delApi (id) {
+      requestApi({
+        name: 'delorder',
+        data: { id }
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast.success('删除成功')
+          this.$parent.$parent.getData(this.status)
+        }
       })
     },
 
@@ -176,6 +199,18 @@ export default {
         margin-left: auto;
         margin-right: 10px;
         background: #2ed573;
+        color: #feffff;
+        outline: none;
+        border: 0;
+        height: 34px;
+        line-height: 34px;
+        border-radius: 10px;
+        width: 100px;
+      }
+      .btn3 {
+        margin-left: auto;
+        margin-right: 10px;
+        background: #e74c3c;
         color: #feffff;
         outline: none;
         border: 0;

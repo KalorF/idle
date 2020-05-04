@@ -8,6 +8,9 @@
             <div class="otherMsg">
               <div>{{ item.creteTime | formatDate }}</div>
             </div>
+            <svg class="icon closeIcon" aria-hidden="true" @click="del(item._id)">
+              <use xlink:href="#icon-guanbi"></use>
+            </svg>
           </div>
           <div class="content">
             {{ item.content }}
@@ -45,7 +48,7 @@ import PageTran from '@/components/PageTran.vue'
 import Back from '@/components/Back.vue'
 import requestApi from '@/request/request'
 import { formatDate } from '@/common/date.js'
-import { ImagePreview } from 'vant'
+import { ImagePreview, Dialog } from 'vant'
 
 export default {
   components: { PageTran, Back },
@@ -81,6 +84,28 @@ export default {
         data: { userId: localStorage.getItem('userInfo') }
       }).then(res => {
         this.dymsData = res.data
+      })
+    },
+
+    del (id) {
+      Dialog.confirm({
+        title: '提示',
+        message: '是否确认删除此动态？'
+      }).then(() => {
+        this.delApi(id)
+      }).catch(() => {
+      })
+    },
+
+    delApi (id) {
+      requestApi({
+        name: 'deldynamic',
+        data: { id }
+      }).then(res => {
+        if (res.code === 200) {
+          this.$toast.success('删除成功')
+          this.getData()
+        }
       })
     }
   }
@@ -124,6 +149,11 @@ export default {
         height: 32px;
         width: 32px;
         border-radius: 50%;
+      }
+      .closeIcon {
+        margin-left: auto;
+        height: 20px;
+        width: 20px;
       }
       .otherMsg {
         margin-left: 10px;

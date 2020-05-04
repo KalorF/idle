@@ -141,5 +141,13 @@ export default {
   getGoodsAndDy: {
     url: '/user/getGoodsAndDy',
     method: 'post'
+  },
+  delorder: {
+    url: '/order/del',
+    method: 'post'
+  },
+  deldynamic: {
+    url: '/dynamic/del',
+    method: 'post'
   }
 }
