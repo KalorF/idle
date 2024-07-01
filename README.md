@@ -3,6 +3,7 @@
 ## 界面展示
 
 * 首页
+  
   <center class="half">
     <img src="https://github.com/KalorF/idle/blob/master/imgs/home.png" width="300"/>
   </center>
@@ -60,6 +61,8 @@
     <img src="https://github.com/KalorF/idle/blob/master/imgs/me.png" width="300"/>
     <img src="https://github.com/KalorF/idle/blob/master/imgs/me2.png" width="300"/>
  </center>
+
+
 ## Project setup
 ```
 yarn install
