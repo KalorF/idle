@@ -27,8 +27,6 @@
 * 商品详情页
  <center class="half">
     <img src="https://github.com/KalorF/idle/blob/master/imgs/detail.png" width="300"/>
-    <img src="https://github.com/KalorF/idle/blob/master/imgs/forgoods.png" width="300"/>
-    <img src="https://github.com/KalorF/idle/blob/master/imgs/forgoods2.png" width="300"/>
  </center>
 * 消息页
  <center class="half">
